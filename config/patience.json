@@ -1,0 +1,24 @@
+{
+    "dataset": "PatienceCorpus",
+    "fbank": {
+        "train": "/esat/spchtemp/scratch/qmeeus/repos/espnet/egs/patience/sti1/dump/patience/nopitch/feats.scp"
+    },
+    "mlm": {
+        "train": "/esat/spchtemp/scratch/qmeeus/repos/espnet-stable/egs/cgn/asr1/exp/CGN_train_pytorch_sti_transformer_lr10.0_ag8_p.5_mlm_specaug/encode/patience/predictions.h5"
+    },
+    "tasks": {
+        "train": "/esat/spchtemp/scratch/qmeeus/data/patience/tasks"
+    },
+    "coder": {
+        "type": "typesplit_coder",
+        "structure": "/esat/spchtemp/scratch/qmeeus/data/patience/structure.xml",
+        "conf": {
+            "tasklabel": false,
+            "threshold": 0.0,
+            "noisetype": null,
+            "noiseprob": 0.0
+        }
+    },
+    "on_error": "ignore",
+    "language_code": "nl"
+}

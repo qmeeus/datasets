@@ -1,0 +1,46 @@
+{
+    "dataset": {
+        "name": "MyDataset",
+        "language_code": "nl"
+    },
+    "files": {
+        "fbank": {
+            "speaker1": "/path/to/speaker1/feats.scp",
+            "speaker2": "/path/to/speaker2/feats.scp",
+            "speaker3": "/path/to/speaker3/feats.scp"
+        },
+        "mlmtransformer": {
+            "speaker1": "/path/to/speaker1/enc.scp",
+            "speaker2": "/path/to/speaker2/enc.scp",
+            "speaker3": "/path/to/speaker3/enc.scp"
+        },
+        "text": {
+            "speaker1": "/path/to/speaker1/text",
+            "speaker2": "/path/to/speaker2/text",
+            "speaker3": "/path/to/speaker3/text"
+        },
+        "tasks": {
+            "speaker1": "/path/to/speaker1/tasks",
+            "speaker2": "/path/to/speaker2/tasks",
+            "speaker3": "/path/to/speaker3/tasks"
+        }
+    },
+    "config": {
+        "text": {
+            "tokenizer": "bert-base-dutch-cased"
+        },
+        "tasks": {
+            "coder": {
+                "type": "typesplit_coder",
+                "structure": "/esat/spchtemp/scratch/qmeeus/data/grabo/structure.xml",
+                "conf": {
+                    "tasklabel": false,
+                    "threshold": 0.0,
+                    "noisetype": null,
+                    "noiseprob": 0.0
+                }
+            }
+        },
+        "on_error": "ignore"
+    }
+}

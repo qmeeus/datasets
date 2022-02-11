@@ -1,0 +1,23 @@
+{
+    "dataset": "atis",
+    "audio": {
+        "train": "/esat/audioslave/qmeeus/data/atis3/kaldi/data/wavfiles"
+    },
+    "text": {
+        "train": "/esat/audioslave/qmeeus/data/atis3/kaldi/data/text"
+    },
+    "pos-tags": {
+        "train": "/esat/audioslave/qmeeus/data/atis3/kaldi/data/pos_tag"
+    },
+    "labels": {
+        "train": ""
+    },
+    "entities": {
+        "train": ""
+    },
+    "semantic-parse": {
+        "train": ""
+    },
+    "on_error": "ignore",
+    "language_code": "en"
+}

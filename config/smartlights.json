@@ -1,0 +1,30 @@
+{
+    "dataset": "SmartLights",
+    "fbank": {
+        "train": "/esat/spchtemp/scratch/qmeeus/data/sonos/local/dump/smart-lights-en-close-field/feats.scp"
+    },
+    "text": {
+        "train": "/esat/spchtemp/scratch/qmeeus/data/sonos/local/data/smart-lights-en-close-field/text"
+    },
+    "asr": {
+        "train": "/esat/spchtemp/scratch/qmeeus/repos/espnet-stable/egs/librispeech/asr1/exp/train_960_pytorch_sti_transformer_lr10.0_ag8_p.5_teachnomask_ft_specaug/encode/smart-lights-en-close/asr.txt"
+    },
+    "mlm": {
+        "train": "/esat/spchtemp/scratch/qmeeus/repos/espnet-stable/egs/librispeech/asr1/exp/train_960_pytorch_sti_transformer_lr10.0_ag8_p.5_specaug/encode/smart-lights-en-close/predictions.h5"
+    },
+    "tasks": {
+        "train": "/esat/spchtemp/scratch/qmeeus/data/sonos/local/data/smart-lights-en-close-field/tasks"
+    },
+    "coder": {
+        "type": "typeshare_coder",
+        "structure": "/esat/spchtemp/scratch/qmeeus/data/sonos/local/data/smart-lights-en-close-field/structure.xml",
+        "conf": {
+            "tasklabel": false,
+            "threshold": 0.0,
+            "noisetype": null,
+            "noiseprob": 0.0
+        }
+    },
+    "on_error": "ignore",
+    "language_code": "en"
+}
