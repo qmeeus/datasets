@@ -1,12 +1,12 @@
-import sys
-sys.path.append("..")
-from datasets import ChatBot
+from datasets import VaccinChat
 
 
 def test_chatbot():
-    chatbot = ChatBot(inputs="fbank", outputs="labels")
-    dataset = chatbot("all")
-    print(dataset, len(dataset))
+    vaccinchat = VaccinChat(inputs="fbank", outputs="labels")
+    dataset = vaccinchat("train")
+    print(f"{vaccinchat.attributes['name']} M={len(dataset)} Nx={dataset.input_dim} Ny={dataset.output_dim}")
+    X, l, y = dataset[:32]
+    print(f"Input: {X.size()} Output: {y.size()} L={l.max()}")
 
 
 if __name__ == "__main__":

@@ -1,40 +1,53 @@
 {
-    "dataset": "FluentSpeechCommands",
-    "fbank": {
-        "train": "/esat/spchtemp/scratch/qmeeus/data/FluentSpeechCommands/kaldi/dump/train/feats.scp",
-        "valid": "/esat/spchtemp/scratch/qmeeus/data/FluentSpeechCommands/kaldi/dump/valid/feats.scp",
-        "test": "/esat/spchtemp/scratch/qmeeus/data/FluentSpeechCommands/kaldi/dump/test/feats.scp"
+    "dataset": {
+        "name": "FluentSpeechCommands",
+        "language_code": "en",
+        "subsets": "splits",
+        "on_error": "ignore"
     },
-    "text": {
-        "train": "/esat/spchtemp/scratch/qmeeus/data/FluentSpeechCommands/kaldi/data/train/text",
-        "valid": "/esat/spchtemp/scratch/qmeeus/data/FluentSpeechCommands/kaldi/data/valid/text",
-        "test": "/esat/spchtemp/scratch/qmeeus/data/FluentSpeechCommands/kaldi/data/test/text"
-    },
-    "asr": {
-        "train": "/esat/spchtemp/scratch/qmeeus/repos/espnet-stable/egs/librispeech/asr1/exp/train_960_pytorch_sti_transformer_lr10.0_ag8_p.5_teachnomask_ft_specaug/encode/fluent/asr_train.txt",
-        "valid": "/esat/spchtemp/scratch/qmeeus/repos/espnet-stable/egs/librispeech/asr1/exp/train_960_pytorch_sti_transformer_lr10.0_ag8_p.5_teachnomask_ft_specaug/encode/fluent/asr_valid.txt",
-        "test": "/esat/spchtemp/scratch/qmeeus/repos/espnet-stable/egs/librispeech/asr1/exp/train_960_pytorch_sti_transformer_lr10.0_ag8_p.5_teachnomask_ft_specaug/encode/fluent/asr_test.txt"
-    },
-    "mlm": {
-        "train": "/esat/spchtemp/scratch/qmeeus/repos/espnet-stable/egs/librispeech/asr1/exp/train_960_pytorch_sti_transformer_lr10.0_ag8_p.5_mlm_specaug/encode/fluent/train.npz",
-        "valid": "/esat/spchtemp/scratch/qmeeus/repos/espnet-stable/egs/librispeech/asr1/exp/train_960_pytorch_sti_transformer_lr10.0_ag8_p.5_mlm_specaug/encode/fluent/valid.npz",
-        "test": "/esat/spchtemp/scratch/qmeeus/repos/espnet-stable/egs/librispeech/asr1/exp/train_960_pytorch_sti_transformer_lr10.0_ag8_p.5_mlm_specaug/encode/fluent/test.npz"
-    },
-    "tasks": {
-        "train": "/esat/spchtemp/scratch/qmeeus/data/FluentSpeechCommands/kaldi/dump/train/tasks",
-        "valid": "/esat/spchtemp/scratch/qmeeus/data/FluentSpeechCommands/kaldi/dump/valid/tasks",
-        "test": "/esat/spchtemp/scratch/qmeeus/data/FluentSpeechCommands/kaldi/dump/test/tasks"
-    },
-    "coder": {
-        "type": "typesplit_coder",
-        "structure": "/esat/spchtemp/scratch/qmeeus/data/FluentSpeechCommands/kaldi/data/structure.xml",
-        "conf": {
-            "tasklabel": false,
-            "threshold": 0.0,
-            "noisetype": null,
-            "noiseprob": 0.0
+    "files": {
+        "fbank": {
+            "_meta": {"type": "feats", "format": "scp", "dim": 80},
+            "train": "/esat/spchtemp/scratch/qmeeus/data/FluentSpeechCommands/kaldi/dump/train/feats.scp",
+            "valid": "/esat/spchtemp/scratch/qmeeus/data/FluentSpeechCommands/kaldi/dump/valid/feats.scp",
+            "test": "/esat/spchtemp/scratch/qmeeus/data/FluentSpeechCommands/kaldi/dump/test/feats.scp"
+        },
+        "mlmtransformer": {
+            "_meta": {"type": "feats", "format": "scp", "dim": 768},
+            "train": "/esat/spchtemp/scratch/qmeeus/repos/espnet-stable/egs/librispeech/asr1/exp/train_960_pytorch_sti_transformer_lr10.0_ag8_p.5_mlm_specaug/encode/fluent/train.npz",
+            "valid": "/esat/spchtemp/scratch/qmeeus/repos/espnet-stable/egs/librispeech/asr1/exp/train_960_pytorch_sti_transformer_lr10.0_ag8_p.5_mlm_specaug/encode/fluent/valid.npz",
+            "test": "/esat/spchtemp/scratch/qmeeus/repos/espnet-stable/egs/librispeech/asr1/exp/train_960_pytorch_sti_transformer_lr10.0_ag8_p.5_mlm_specaug/encode/fluent/test.npz"
+        },
+        "asrtransformer": {
+            "_meta": {"type": "text", "format": "txt", "dim": null},
+            "train": "/esat/spchtemp/scratch/qmeeus/repos/espnet-stable/egs/librispeech/asr1/exp/train_960_pytorch_sti_transformer_lr10.0_ag8_p.5_teachnomask_ft_specaug/encode/fluent/asr_train.txt",
+            "valid": "/esat/spchtemp/scratch/qmeeus/repos/espnet-stable/egs/librispeech/asr1/exp/train_960_pytorch_sti_transformer_lr10.0_ag8_p.5_teachnomask_ft_specaug/encode/fluent/asr_valid.txt",
+            "test": "/esat/spchtemp/scratch/qmeeus/repos/espnet-stable/egs/librispeech/asr1/exp/train_960_pytorch_sti_transformer_lr10.0_ag8_p.5_teachnomask_ft_specaug/encode/fluent/asr_test.txt"
+        },
+        "text": {
+            "_meta": {"type": "text", "format": "txt", "dim": null},
+            "train": "/esat/spchtemp/scratch/qmeeus/data/FluentSpeechCommands/kaldi/data/train/text",
+            "valid": "/esat/spchtemp/scratch/qmeeus/data/FluentSpeechCommands/kaldi/data/valid/text",
+            "test": "/esat/spchtemp/scratch/qmeeus/data/FluentSpeechCommands/kaldi/data/test/text"
+        },
+        "tasks": {
+            "_meta": {"type": "tasks", "format": "txt", "dim": null},
+            "train": "/esat/spchtemp/scratch/qmeeus/data/FluentSpeechCommands/kaldi/dump/train/tasks",
+            "valid": "/esat/spchtemp/scratch/qmeeus/data/FluentSpeechCommands/kaldi/dump/valid/tasks",
+            "test": "/esat/spchtemp/scratch/qmeeus/data/FluentSpeechCommands/kaldi/dump/test/tasks"
         }
     },
-    "on_error": "ignore",
-    "language_code": "en"
+    "converters": {
+        "tokenizer": "bert-base-uncased",
+        "coder": {
+            "type": "typesplit_coder",
+            "structure": "/esat/spchtemp/scratch/qmeeus/data/FluentSpeechCommands/kaldi/data/structure.xml",
+            "conf": {
+                "tasklabel": false,
+                "threshold": 0.0,
+                "noisetype": null,
+                "noiseprob": 0.0
+            }
+        }
+    }
 }

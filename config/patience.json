@@ -1,24 +1,78 @@
 {
-    "dataset": "PatienceCorpus",
-    "fbank": {
-        "train": "/esat/spchtemp/scratch/qmeeus/repos/espnet/egs/patience/sti1/dump/patience/nopitch/feats.scp"
+    "dataset": {
+        "name": "PatienceCorpus",
+        "language_code": "nl",
+        "subsets": "speaker",
+        "on_error": "ignore"
     },
-    "mlm": {
-        "train": "/esat/spchtemp/scratch/qmeeus/repos/espnet-stable/egs/cgn/asr1/exp/CGN_train_pytorch_sti_transformer_lr10.0_ag8_p.5_mlm_specaug/encode/patience/predictions.h5"
-    },
-    "tasks": {
-        "train": "/esat/spchtemp/scratch/qmeeus/data/patience/tasks"
-    },
-    "coder": {
-        "type": "typesplit_coder",
-        "structure": "/esat/spchtemp/scratch/qmeeus/data/patience/structure.xml",
-        "conf": {
-            "tasklabel": false,
-            "threshold": 0.0,
-            "noisetype": null,
-            "noiseprob": 0.0
+    "files": {
+        "fbank": {
+            "_meta": {"type": "feats", "format": "scp", "dim": 80},
+            "pp1": "/esat/spchtemp/scratch/qmeeus/data/patience/speakers/pp1/feats.scp",
+            "pp3": "/esat/spchtemp/scratch/qmeeus/data/patience/speakers/pp3/feats.scp",
+            "pp4": "/esat/spchtemp/scratch/qmeeus/data/patience/speakers/pp4/feats.scp",
+            "pp6": "/esat/spchtemp/scratch/qmeeus/data/patience/speakers/pp6/feats.scp",
+            "pp7": "/esat/spchtemp/scratch/qmeeus/data/patience/speakers/pp7/feats.scp",
+            "pp8": "/esat/spchtemp/scratch/qmeeus/data/patience/speakers/pp8/feats.scp",
+            "pp9": "/esat/spchtemp/scratch/qmeeus/data/patience/speakers/pp9/feats.scp",
+            "pp10": "/esat/spchtemp/scratch/qmeeus/data/patience/speakers/pp10/feats.scp"
+        },
+        "mlmtransformer": {
+            "_meta": {"type": "feats", "format": "npz", "dim": 768},
+            "pp1": "/esat/spchtemp/scratch/qmeeus/repos/assist/features/patience/speechbert_mlm/pp1.npz",
+            "pp3": "/esat/spchtemp/scratch/qmeeus/repos/assist/features/patience/speechbert_mlm/pp3.npz",
+            "pp4": "/esat/spchtemp/scratch/qmeeus/repos/assist/features/patience/speechbert_mlm/pp4.npz",
+            "pp6": "/esat/spchtemp/scratch/qmeeus/repos/assist/features/patience/speechbert_mlm/pp6.npz",
+            "pp7": "/esat/spchtemp/scratch/qmeeus/repos/assist/features/patience/speechbert_mlm/pp7.npz",
+            "pp8": "/esat/spchtemp/scratch/qmeeus/repos/assist/features/patience/speechbert_mlm/pp8.npz",
+            "pp9": "/esat/spchtemp/scratch/qmeeus/repos/assist/features/patience/speechbert_mlm/pp9.npz",
+            "pp10": "/esat/spchtemp/scratch/qmeeus/repos/assist/features/patience/speechbert_mlm/pp10.npz"
+        },
+        "asrtransformer": {
+            "_meta": {"type": "text", "format": "txt", "dim": null},
+            "pp1": "/esat/spchtemp/scratch/qmeeus/data/patience/speakers/pp1/transcription",
+            "pp3": "/esat/spchtemp/scratch/qmeeus/data/patience/speakers/pp3/transcription",
+            "pp4": "/esat/spchtemp/scratch/qmeeus/data/patience/speakers/pp4/transcription",
+            "pp6": "/esat/spchtemp/scratch/qmeeus/data/patience/speakers/pp6/transcription",
+            "pp7": "/esat/spchtemp/scratch/qmeeus/data/patience/speakers/pp7/transcription",
+            "pp8": "/esat/spchtemp/scratch/qmeeus/data/patience/speakers/pp8/transcription",
+            "pp9": "/esat/spchtemp/scratch/qmeeus/data/patience/speakers/pp9/transcription",
+            "pp10": "/esat/spchtemp/scratch/qmeeus/data/patience/speakers/pp10/transcription"
+        },
+        "text": {
+            "_meta": {"type": "text", "format": "txt", "dim": null},
+            "pp1": "/esat/spchtemp/scratch/qmeeus/data/patience/speakers/pp1/text",
+            "pp3": "/esat/spchtemp/scratch/qmeeus/data/patience/speakers/pp3/text",
+            "pp4": "/esat/spchtemp/scratch/qmeeus/data/patience/speakers/pp4/text",
+            "pp6": "/esat/spchtemp/scratch/qmeeus/data/patience/speakers/pp6/text",
+            "pp7": "/esat/spchtemp/scratch/qmeeus/data/patience/speakers/pp7/text",
+            "pp8": "/esat/spchtemp/scratch/qmeeus/data/patience/speakers/pp8/text",
+            "pp9": "/esat/spchtemp/scratch/qmeeus/data/patience/speakers/pp9/text",
+            "pp10": "/esat/spchtemp/scratch/qmeeus/data/patience/speakers/pp10/text"
+        },
+        "tasks": {
+            "_meta": {"type": "tasks", "format": "txt", "dim": null},
+            "pp1": "/esat/spchtemp/scratch/qmeeus/data/patience/speakers/pp1/tasks",
+            "pp3": "/esat/spchtemp/scratch/qmeeus/data/patience/speakers/pp3/tasks",
+            "pp4": "/esat/spchtemp/scratch/qmeeus/data/patience/speakers/pp4/tasks",
+            "pp6": "/esat/spchtemp/scratch/qmeeus/data/patience/speakers/pp6/tasks",
+            "pp7": "/esat/spchtemp/scratch/qmeeus/data/patience/speakers/pp7/tasks",
+            "pp8": "/esat/spchtemp/scratch/qmeeus/data/patience/speakers/pp8/tasks",
+            "pp9": "/esat/spchtemp/scratch/qmeeus/data/patience/speakers/pp9/tasks",
+            "pp10": "/esat/spchtemp/scratch/qmeeus/data/patience/speakers/pp10/tasks"
         }
     },
-    "on_error": "ignore",
-    "language_code": "nl"
+    "converters": {
+        "tokenizer": "GroNLP/bert-base-dutch-cased",
+        "coder": {
+            "type": "typesplit_coder",
+            "structure": "/esat/spchtemp/scratch/qmeeus/data/patience/structure.xml",
+            "conf": {
+                "tasklabel": false,
+                "threshold": 0.0,
+                "noisetype": null,
+                "noiseprob": 0.0
+            }
+        }
+    }
 }

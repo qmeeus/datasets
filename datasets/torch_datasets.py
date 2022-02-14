@@ -100,4 +100,4 @@ def pad_and_sort_batch(batch, sort=False):
     if sort:
         lengths, features, *tensors = sort_batch(lengths, features, *tensors)
 
-    return (features, lengths) + tuple(tensors)
+    return (features, lengths, *tensors)

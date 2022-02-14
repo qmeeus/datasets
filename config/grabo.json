@@ -1,25 +1,94 @@
 {
-    "dataset": "Grabo",
-    "fbank": {
-        "train": "/esat/spchtemp/scratch/qmeeus/data/grabo/dump/nopitch/feats.scp"
+    "dataset": {
+        "name": "Grabo",
+        "language_code": "nl",
+        "subsets": "speaker",
+        "on_error": "ignore"
     },
-    "mlm": {
-        "train": "/esat/spchtemp/scratch/qmeeus/repos/espnet-stable/egs/cgn/asr1/exp/CGN_train_pytorch_sti_transformer_lr10.0_ag8_p.5_mlm_wwm_sort_specaug/encode/grabo/predictions.h5",
-        "old": "/esat/spchtemp/scratch/qmeeus/repos/espnet-stable/egs/cgn/asr1/exp/CGN_train_pytorch_sti_transformer_lr10.0_ag8_p.5_mlm_wwm_specaug/encode/grabo/predictions.h5"
-    },
-    "tasks": {
-        "train": "/esat/spchtemp/scratch/qmeeus/data/grabo/tasks"
-    },
-    "coder": {
-        "type": "typesplit_coder",
-        "structure": "/esat/spchtemp/scratch/qmeeus/data/grabo/structure.xml",
-        "conf": {
-            "tasklabel": false,
-            "threshold": 0.0,
-            "noisetype": null,
-            "noiseprob": 0.0
+    "files": {
+        "fbank": {
+            "_meta": {"type": "feats", "format": "scp", "dim": 80},
+            "pp2": "/esat/spchtemp/scratch/qmeeus/data/grabo/speakers/pp2/feats.scp",
+            "pp3": "/esat/spchtemp/scratch/qmeeus/data/grabo/speakers/pp3/feats.scp",
+            "pp4": "/esat/spchtemp/scratch/qmeeus/data/grabo/speakers/pp4/feats.scp",
+            "pp5": "/esat/spchtemp/scratch/qmeeus/data/grabo/speakers/pp5/feats.scp",
+            "pp6": "/esat/spchtemp/scratch/qmeeus/data/grabo/speakers/pp6/feats.scp",
+            "pp7": "/esat/spchtemp/scratch/qmeeus/data/grabo/speakers/pp7/feats.scp",
+            "pp8": "/esat/spchtemp/scratch/qmeeus/data/grabo/speakers/pp8/feats.scp",
+            "pp9": "/esat/spchtemp/scratch/qmeeus/data/grabo/speakers/pp9/feats.scp",
+            "pp10": "/esat/spchtemp/scratch/qmeeus/data/grabo/speakers/pp10/feats.scp",
+            "pp11": "/esat/spchtemp/scratch/qmeeus/data/grabo/speakers/pp11/feats.scp",
+            "pp12": "/esat/spchtemp/scratch/qmeeus/data/grabo/speakers/pp12/feats.scp"
+        },
+        "mlmtransformer": {
+            "_meta": {"type": "feats", "format": "npz", "dim": 768},
+            "pp2": "/esat/spchtemp/scratch/qmeeus/repos/assist/features/grabo/mlm_wwm/pp2.npz",
+            "pp3": "/esat/spchtemp/scratch/qmeeus/repos/assist/features/grabo/mlm_wwm/pp3.npz",
+            "pp4": "/esat/spchtemp/scratch/qmeeus/repos/assist/features/grabo/mlm_wwm/pp4.npz",
+            "pp5": "/esat/spchtemp/scratch/qmeeus/repos/assist/features/grabo/mlm_wwm/pp5.npz",
+            "pp6": "/esat/spchtemp/scratch/qmeeus/repos/assist/features/grabo/mlm_wwm/pp6.npz",
+            "pp7": "/esat/spchtemp/scratch/qmeeus/repos/assist/features/grabo/mlm_wwm/pp7.npz",
+            "pp8": "/esat/spchtemp/scratch/qmeeus/repos/assist/features/grabo/mlm_wwm/pp8.npz",
+            "pp9": "/esat/spchtemp/scratch/qmeeus/repos/assist/features/grabo/mlm_wwm/pp9.npz",
+            "pp10": "/esat/spchtemp/scratch/qmeeus/repos/assist/features/grabo/mlm_wwm/pp10.npz",
+            "pp11": "/esat/spchtemp/scratch/qmeeus/repos/assist/features/grabo/mlm_wwm/pp11.npz",
+            "pp12": "/esat/spchtemp/scratch/qmeeus/repos/assist/features/grabo/mlm_wwm/pp12.npz"
+        },
+        "asrtransformer": {
+            "_meta": {"type": "text", "format": "txt", "dim": null},
+            "pp2": "/esat/spchtemp/scratch/qmeeus/data/grabo/speakers/pp2/transcription",
+            "pp3": "/esat/spchtemp/scratch/qmeeus/data/grabo/speakers/pp3/transcription",
+            "pp4": "/esat/spchtemp/scratch/qmeeus/data/grabo/speakers/pp4/transcription",
+            "pp5": "/esat/spchtemp/scratch/qmeeus/data/grabo/speakers/pp5/transcription",
+            "pp6": "/esat/spchtemp/scratch/qmeeus/data/grabo/speakers/pp6/transcription",
+            "pp7": "/esat/spchtemp/scratch/qmeeus/data/grabo/speakers/pp7/transcription",
+            "pp8": "/esat/spchtemp/scratch/qmeeus/data/grabo/speakers/pp8/transcription",
+            "pp9": "/esat/spchtemp/scratch/qmeeus/data/grabo/speakers/pp9/transcription",
+            "pp10": "/esat/spchtemp/scratch/qmeeus/data/grabo/speakers/pp10/transcription",
+            "pp11": "/esat/spchtemp/scratch/qmeeus/data/grabo/speakers/pp11/transcription",
+            "pp12": "/esat/spchtemp/scratch/qmeeus/data/grabo/speakers/pp12/transcription"
+        },
+        "text": {
+            "_meta": {"type": "text", "format": "txt", "dim": null},
+            "pp2": "/esat/spchtemp/scratch/qmeeus/data/grabo/speakers/pp2/text",
+            "pp3": "/esat/spchtemp/scratch/qmeeus/data/grabo/speakers/pp3/text",
+            "pp4": "/esat/spchtemp/scratch/qmeeus/data/grabo/speakers/pp4/text",
+            "pp5": "/esat/spchtemp/scratch/qmeeus/data/grabo/speakers/pp5/text",
+            "pp6": "/esat/spchtemp/scratch/qmeeus/data/grabo/speakers/pp6/text",
+            "pp7": "/esat/spchtemp/scratch/qmeeus/data/grabo/speakers/pp7/text",
+            "pp8": "/esat/spchtemp/scratch/qmeeus/data/grabo/speakers/pp8/text",
+            "pp9": "/esat/spchtemp/scratch/qmeeus/data/grabo/speakers/pp9/text",
+            "pp10": "/esat/spchtemp/scratch/qmeeus/data/grabo/speakers/pp10/text",
+            "pp11": "/esat/spchtemp/scratch/qmeeus/data/grabo/speakers/pp11/text",
+            "pp12": "/esat/spchtemp/scratch/qmeeus/data/grabo/speakers/pp12/text"
+            
+        },
+        "tasks": {
+            "_meta": {"type": "tasks", "format": "txt", "dim": null},
+            "pp2": "/esat/spchtemp/scratch/qmeeus/data/grabo/speakers/pp2/tasks",
+            "pp3": "/esat/spchtemp/scratch/qmeeus/data/grabo/speakers/pp3/tasks",
+            "pp4": "/esat/spchtemp/scratch/qmeeus/data/grabo/speakers/pp4/tasks",
+            "pp5": "/esat/spchtemp/scratch/qmeeus/data/grabo/speakers/pp5/tasks",
+            "pp6": "/esat/spchtemp/scratch/qmeeus/data/grabo/speakers/pp6/tasks",
+            "pp7": "/esat/spchtemp/scratch/qmeeus/data/grabo/speakers/pp7/tasks",
+            "pp8": "/esat/spchtemp/scratch/qmeeus/data/grabo/speakers/pp8/tasks",
+            "pp9": "/esat/spchtemp/scratch/qmeeus/data/grabo/speakers/pp9/tasks",
+            "pp10": "/esat/spchtemp/scratch/qmeeus/data/grabo/speakers/pp10/tasks",
+            "pp11": "/esat/spchtemp/scratch/qmeeus/data/grabo/speakers/pp11/tasks",
+            "pp12": "/esat/spchtemp/scratch/qmeeus/data/grabo/speakers/pp12/tasks"
         }
     },
-    "on_error": "ignore",
-    "language_code": "nl"
+    "converters": {
+        "tokenizer": "GroNLP/bert-base-dutch-cased",
+        "coder": {
+            "type": "typesplit_coder",
+            "structure": "/esat/spchtemp/scratch/qmeeus/data/grabo/structure.xml",
+            "conf": {
+                "tasklabel": false,
+                "threshold": 0.0,
+                "noisetype": null,
+                "noiseprob": 0.0
+            }
+        }
+    }
 }
