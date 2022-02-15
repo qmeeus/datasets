@@ -4,17 +4,25 @@ import kaldiio
 import numpy as np
 import os
 import sys
+from argparse import ArgumentParser, Namespace
 from math import floor
 from pathlib import Path
 from sklearn.model_selection import train_test_split
-from transformers import AutoTokenizer
+from transformers import AutoTokenizer, PreTrainedTokenizerBase
 
+# FIXME: should not use sys and ideally remove dependency to assist
 sys.path.append("/esat/spchtemp/scratch/qmeeus/repos/assist")
+from assist.tasks.coder import Coder as CoderBase
 from assist.tasks import Structure, coder_factory, read_task
 from assist.tools import parse_line, logger
             
-from .torch_datasets import SequenceDataset
-from .torch_datasets import Subset
+from .torch_datasets import SequenceDataset, Subset
+
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+
+Json = Dict[str,Any]
+PathLike = Union[Path,str]
+TorchDataset = Union[SequenceDataset,Subset]
 
 __all__ = [
     "Dataset",
@@ -32,17 +40,17 @@ CONFIG_DIR = Path(__file__).parents[1]/"config"
 class Dataset:
 
     @staticmethod
-    def parse_args(parser):
+    def parse_args(parser:ArgumentParser) -> ArgumentParser:
         parser.add_argument("--dataset", type=Path, required=True, help="Path to dataset config")
         parser.add_argument("--input-key", type=str, default="fbank", help="Input key in dataset config")
         parser.add_argument("--output-key", type=str, default="tasks", help="Output key in dataset config")
         return parser
 
     @classmethod
-    def from_args(cls, args):
+    def from_args(cls, args:Namespace) -> 'Dataset':
         return cls(args.dataset, [args.input_key, args.output_key])
 
-    def __init__(self, config, load_keys=None):
+    def __init__(self, config:Json, load_keys:Optional[List[str]]=None):
 
         if isinstance(config, (str, Path)):
             config = self.load_config(config)
@@ -53,7 +61,7 @@ class Dataset:
         self._converters = config["converters"]
         self._data = config["files"]
         
-    def __call__(self, subsets, sample=1.):
+    def __call__(self, subsets:Union[str,List[str]], sample:float=1.) -> TorchDataset:
         
         if isinstance(subsets, str):
             subsets = [subsets]
@@ -85,13 +93,13 @@ class Dataset:
         return SequenceDataset(inputs, outputs, index, idim, odim)
                 
     @property
-    def classes(self):
+    def classes(self) -> List[str]:
         if "classes" not in self._converters:
             raise ValueError("Classes not listed in config")
         return self._converters["classes"]
         
     @property
-    def tokenizer(self):
+    def tokenizer(self) -> PreTrainedTokenizerBase:
         if "tokenizer" not in self._converters:
             raise ValueError("Tokenizer not set in config")
         tokenizer = self._converters["tokenizer"]
@@ -101,7 +109,7 @@ class Dataset:
         return tokenizer
 
     @property
-    def coder(self):
+    def coder(self) -> CoderBase:
         if "coder" not in self._converters:
             raise ValueError("Tokenizer not set in config")
         
@@ -112,7 +120,7 @@ class Dataset:
             coder = self._converters["coder"] = Coder(structure, coder["conf"])
         return coder
         
-    def validate_subset(self, *inputs):
+    def validate_subset(self, *inputs:List[Json]) -> List[Json]:
         on_error = self.attributes.get("on_error", "raise")
         uttids = [set(data) for data in inputs]
         errors = set.union(*uttids) - set.intersection(*uttids)
@@ -136,7 +144,7 @@ class Dataset:
 
         return outputs
         
-    def load(self, filename, filetype):
+    def load(self, filename:PathLike, filetype:str) -> Json:
         
         if filetype == "scp":
             return dict(kaldiio.load_scp(filename))
@@ -151,7 +159,7 @@ class Dataset:
 
         raise NotImplementedError(f"Unknown filetype {filetype} for {filename}")
 
-    def process(self, data, datatype):
+    def process(self, data:List[Union[str,float,int]], datatype:str) -> Tuple[np.array,int]:
 
         if datatype == "feats":
             data = np.array(data, dtype="object")
@@ -165,12 +173,13 @@ class Dataset:
             data = np.array(list(map(encode, data)))
             return data, self.coder.numlabels
         if datatype == "text":
+            # TODO: return np.array, not tensors
             return self.tokenizer(data)["input_ids"], self.tokenizer.vocab_size
 
         raise NotImplementedError(f"Unknown datatype {datatype} for data of type {type(data)}")
 
     @staticmethod
-    def split(dataset, sizes):
+    def split(dataset:TorchDataset, sizes:List[Union[int,float]]) -> List[Subset]:
         if sum(sizes) != 1:
             raise ValueError(f"Total size requested is not equal to 1.")
         
@@ -190,20 +199,20 @@ class Dataset:
         return subsets
 
     @staticmethod
-    def save_splits(outdir, splits):
+    def save_splits(outdir:PathLike, splits:Dict[str,Subset]) -> None:
         os.makedirs(outdir, exist_ok=True)
         for name, subset in splits.items():
             subset.save(f"{outdir}/{name}.txt")
         
     @staticmethod
-    def merge(load, files, *args):
+    def merge(load:Callable, files:List[PathLike], *args:Json) -> Json:
         out = {}
         for filename in files:
             out.update(load(filename, *args))
         return out
     
     @staticmethod
-    def load_config(config):
+    def load_config(config:PathLike) -> Json:
         with open(config, "r") as f:
             return json.load(f)
 

@@ -4,9 +4,11 @@ from torch import nn
 from torch.utils.data import Dataset
 from torch.utils.data import Subset as _Subset
 
+from typing import List, Optional, Union
 
 __all__ = [
     "SequenceDataset",
+    "Subset",
     "pad_and_sort_batch",
     "sort_batch",
 ]
@@ -14,7 +16,11 @@ __all__ = [
 
 class SequenceDataset(Dataset):
 
-    def __init__(self, features, labels=None, indices=None, input_dim=None, output_dim=None):
+    def __init__(self, features:np.array, 
+                 labels:Optional[np.array]=None, 
+                 indices:Optional[List[Union[str,int]]]=None, 
+                 input_dim:Optional[int]=None, 
+                 output_dim:Optional[int]=None):
         
         if type(features[0]) == list and input_dim is None:
             raise ValueError("Cannot infer input dim")
@@ -35,7 +41,7 @@ class SequenceDataset(Dataset):
         self.labels = labels
         self.indices = list(indices if indices is not None else np.arange(len(features)))
         
-    def __getitem__(self, idx):
+    def __getitem__(self, idx:Union[slice,str,int]) -> List[torch.Tensor]:
         
         if isinstance(idx, slice):
             return self.data_collator([self[i] for i in range(*idx.indices(len(self)))])
@@ -51,33 +57,45 @@ class SequenceDataset(Dataset):
 
         return tensors
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self.features)
 
     @staticmethod
-    def data_collator(batch):
-        return pad_and_sort_batch(batch)
+    def data_collator(batch:List[List[torch.Tensor]]) -> List[torch.Tensor]:
+        return pad_batch(batch)
 
 
 class Subset(_Subset):
 
-    def __init__(self, dataset, indices):
+    def __init__(self, dataset:SequenceDataset, indices:List[str]):
         super(Subset, self).__init__(dataset, indices)
         if hasattr(dataset, "input_dim"):
             self.input_dim = dataset.input_dim
         if hasattr(dataset, "output_dim"):
             self.output_dim = dataset.output_dim
             
-    def data_collator(self, batch):
+    def data_collator(self, batch:List[List[torch.Tensor]]) -> List[torch.Tensor]:
         return self.dataset.data_collator(batch)
 
-    def save(self, filename):
+    def save(self, filename:str) -> None:
         with open(filename, "w") as f:
             index = self.dataset.indices[self.indices]
             f.writelines(map("{}\n".format, index))
 
 
-def sort_batch(lengths, *tensors):
+def pad_batch(batch:List[List[torch.Tensor]]) -> List[torch.Tensor]:
+    """
+    batch should be a list of (sequence, target, length) tuples...
+    Returns a padded tensor of sequences sorted from longest to shortest,
+    """
+    features, lengths, *tensors = list(zip(*batch))
+    features = nn.utils.rnn.pad_sequence(features, batch_first=True, padding_value=0.)
+    lengths = torch.stack(lengths, 0)
+    tensors = tuple(torch.stack(tensor, 0) for tensor in tensors)
+    return (features, lengths, *tensors)
+
+
+def sort_batch(lengths:torch.LongTensor, *tensors:List[torch.Tensor]) -> List[torch.Tensor]:
     """
     Sort a minibatch by the length of the sequences with the longest sequences first
     return the sorted batch targes and sequence lengths.
@@ -87,17 +105,7 @@ def sort_batch(lengths, *tensors):
     return (lengths,) + tuple(tensor[sort_order] for tensor in tensors)
 
 
-def pad_and_sort_batch(batch, sort=False):
-    """
-    batch should be a list of (sequence, target, length) tuples...
-    Returns a padded tensor of sequences sorted from longest to shortest,
-    """
-    features, lengths, *tensors = list(zip(*batch))
-    features = nn.utils.rnn.pad_sequence(features, batch_first=True, padding_value=0.)
-    lengths = torch.stack(lengths, 0)
-    tensors = tuple(torch.stack(tensor, 0) for tensor in tensors)
-
-    if sort:
-        lengths, features, *tensors = sort_batch(lengths, features, *tensors)
-
+def pad_and_sort_batch(batch:List[List[torch.Tensor]]) -> List[torch.Tensor]:
+    features, lengths, *tensors = pad_batch(batch)
+    lengths, features, *tensors = sort_batch(lengths, features, *tensors)
     return (features, lengths, *tensors)
