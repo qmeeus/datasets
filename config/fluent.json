@@ -13,7 +13,7 @@
             "test": "/esat/spchtemp/scratch/qmeeus/data/FluentSpeechCommands/kaldi/dump/test/feats.scp"
         },
         "mlmtransformer": {
-            "_meta": {"type": "feats", "format": "scp", "dim": 768},
+            "_meta": {"type": "feats", "format": "npz", "dim": 768},
             "train": "/esat/spchtemp/scratch/qmeeus/repos/espnet-stable/egs/librispeech/asr1/exp/train_960_pytorch_sti_transformer_lr10.0_ag8_p.5_mlm_specaug/encode/fluent/train.npz",
             "valid": "/esat/spchtemp/scratch/qmeeus/repos/espnet-stable/egs/librispeech/asr1/exp/train_960_pytorch_sti_transformer_lr10.0_ag8_p.5_mlm_specaug/encode/fluent/valid.npz",
             "test": "/esat/spchtemp/scratch/qmeeus/repos/espnet-stable/egs/librispeech/asr1/exp/train_960_pytorch_sti_transformer_lr10.0_ag8_p.5_mlm_specaug/encode/fluent/test.npz"
