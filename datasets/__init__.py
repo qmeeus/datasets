@@ -15,7 +15,7 @@ sys.path.append("/esat/spchtemp/scratch/qmeeus/repos/assist")
 from assist.tasks.coder import Coder as CoderBase
 from assist.tasks import Structure, coder_factory, read_task
 from assist.tools import parse_line, logger
-            
+
 from .torch_datasets import SequenceDataset, Subset
 
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
@@ -54,18 +54,24 @@ class Dataset:
 
         if isinstance(config, (str, Path)):
             config = self.load_config(config)
-        
+
         self.attributes = config["dataset"]
         self.data_keys = load_keys or list(config["files"])
-        
+        if len(self.data_keys) > 2:
+            # TODO: Implement for more than 1 input & 1 output
+            raise NotImplementedError("No more than 2 data types implemented")
+
         self._converters = config["converters"]
         self._data = config["files"]
-        
-    def __call__(self, subsets:Union[str,List[str]], sample:float=1.) -> TorchDataset:
-        
+
+    def __call__(self, subsets:Optional[Union[str,List[str]]]=None, sample:Optional[Union[int,float]]=None) -> TorchDataset:
+
+        if subsets is None:
+            subsets = self.get_available_subsets()
+
         if isinstance(subsets, str):
             subsets = [subsets]
-        
+
         data = ()
         for data_key in self.data_keys:
             filenames = [fn for subset, fn in self._data[data_key].items() if subset in subsets]
@@ -73,12 +79,15 @@ class Dataset:
                 raise ValueError(f"Invalid subsets: {subsets}. Available: {self.data_keys}")
             filetype = self._data[data_key]["_meta"]["format"]
             data += (self.merge(self.load, filenames, filetype),)
-            
+
         data = self.validate_subset(*data)
-        index = list(data[0])
-        if 0 < sample < 1:
-            index = np.random.choice(index, int(len(index) * sample), replace=False)
-        
+        index = sorted(data[0])
+
+        if isinstance(sample, (int, float)) and sample > 0:
+            if type(sample) is float:
+                sample = int(len(index) * sample)
+            index = np.random.choice(index, sample, replace=False)
+
         arrays = ()
         dims = ()
         for data_key, table in zip(self.data_keys, data):
@@ -86,40 +95,51 @@ class Dataset:
             array, dim = self.process(table, self._data[data_key]["_meta"]["type"])
             arrays += (array,)
             dims += (dim,)
-        
-        # TODO: Implement for more than 1 input & 1 output
-        inputs, outputs = arrays[:2]
-        idim, odim = dims[:2]
-        return SequenceDataset(inputs, outputs, index, idim, odim)
-                
+
+        return SequenceDataset(*arrays, index, *dims)
+
     @property
     def classes(self) -> List[str]:
         if "classes" not in self._converters:
             raise ValueError("Classes not listed in config")
-        return self._converters["classes"]
-        
+        classes = self._converters["classes"]
+        if type(classes) is str:
+            with open(classes) as f:
+                self._converters["classes"] = classes = list(filter(bool, map(str.strip, f)))
+        return classes
+
     @property
     def tokenizer(self) -> PreTrainedTokenizerBase:
         if "tokenizer" not in self._converters:
             raise ValueError("Tokenizer not set in config")
         tokenizer = self._converters["tokenizer"]
         if type(tokenizer) is str:
-            tokenizer = AutoTokenizer.from_pretrained(tokenizer)
-            self._converters["tokenizer"] = tokenizer
+            self._converters["tokenizer"] = tokenizer = AutoTokenizer.from_pretrained(tokenizer)
         return tokenizer
 
     @property
     def coder(self) -> CoderBase:
         if "coder" not in self._converters:
             raise ValueError("Tokenizer not set in config")
-        
+
         coder = self._converters["coder"]
-        if type(coder) is dict:    
+        if type(coder) is dict:
             Coder = coder_factory(coder["type"])
             structure = Structure(coder["structure"])
             coder = self._converters["coder"] = Coder(structure, coder["conf"])
         return coder
-        
+
+    def get_available_subsets(self, data_keys:Optional[Union[List[str],str]]=None) -> List[str]:
+        data_keys = data_keys or self.data_keys
+
+        if type(data_keys) is str:
+            return [key for key in self._data[data_keys] if key != "_meta"]
+
+        if not all(type(key) is str for key in data_keys):
+            raise TypeError(f"Wrong type for {data_keys} (expected list of strings)")
+
+        return list(set.intersection(*map(set, map(self.get_available_subsets, data_keys))))
+
     def validate_subset(self, *inputs:List[Json]) -> List[Json]:
         on_error = self.attributes.get("on_error", "raise")
         uttids = [set(data) for data in inputs]
@@ -143,9 +163,9 @@ class Dataset:
             raise ValueError(msg)
 
         return outputs
-        
+
     def load(self, filename:PathLike, filetype:str) -> Json:
-        
+
         if filetype == "scp":
             return dict(kaldiio.load_scp(filename))
         if filetype == "npz":
@@ -182,13 +202,13 @@ class Dataset:
     def split(dataset:TorchDataset, sizes:List[Union[int,float]]) -> List[Subset]:
         if sum(sizes) != 1:
             raise ValueError(f"Total size requested is not equal to 1.")
-        
+
         indices = dataset.indices
 
         if type(sizes[0]) is float:
             sizes = [floor(p * len(indices)) for p in sizes]
             sizes[0] = len(indices) - sum(sizes[1:])
-            
+
         subsets = []
         for size in sizes[:-1]:
             subset, indices = train_test_split(indices, train_size=size)
@@ -203,14 +223,14 @@ class Dataset:
         os.makedirs(outdir, exist_ok=True)
         for name, subset in splits.items():
             subset.save(f"{outdir}/{name}.txt")
-        
+
     @staticmethod
-    def merge(load:Callable, files:List[PathLike], *args:Json) -> Json:
+    def merge(load:Callable[...,Json], files:List[PathLike], *args:List[Any]) -> Json:
         out = {}
         for filename in files:
             out.update(load(filename, *args))
         return out
-    
+
     @staticmethod
     def load_config(config:PathLike) -> Json:
         with open(config, "r") as f:
@@ -219,7 +239,7 @@ class Dataset:
     # def __call__(self, subset=None, indices=None, p=1.):
     #     if not(subset or indices):
     #         raise ValueError("No argument supplied.")
-        
+
     #     ikey, okey = self.input_key, self.output_key
     #     subsets = list(self.config[ikey]) if subset is None else [subset]
 
