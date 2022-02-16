@@ -24,7 +24,7 @@
         }
     },
     "converters": {
-        "tokenizer": "bert-base-dutch-cased",
+        "tokenizer": "bert-base-uncased",
         "coder": {
             "type": "typeshare_coder",
             "structure": "/esat/spchtemp/scratch/qmeeus/data/sonos/local/data/smart-lights-en-close-field/structure.xml",

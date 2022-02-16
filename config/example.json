@@ -44,7 +44,7 @@
         }
     },
     "converters": {
-        "tokenizer": "bert-base-dutch-cased",
+        "tokenizer": "GroNLP/bert-base-dutch-cased",
         "coder": {
             "type": "typesplit_coder",
             "structure": "/esat/spchtemp/scratch/qmeeus/data/grabo/structure.xml",
@@ -55,9 +55,6 @@
                 "noiseprob": 0.0
             }
         },
-        "classes": [
-            "positive",
-            "negative"
-        ]
+        "classes": "/path/to/classes"
     }
 }
