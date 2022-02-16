@@ -4,7 +4,7 @@ from torch import nn
 from torch.utils.data import Dataset
 from torch.utils.data import Subset as _Subset
 
-from typing import List, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 __all__ = [
     "SequenceDataset",
@@ -13,39 +13,70 @@ __all__ = [
     "sort_batch",
 ]
 
+Json = Dict[str,Any]
+
+# TODO
+# class SequenceDataset(Dataset):
+
+#     """
+#     A pytorch dataset able to handle sequences
+#     data:   A list of dictionaries representing an array.
+#             They should be given in the right order for the model.forward function.
+#             Each dictionary should have:
+#                 - name      :str:       a name for the data
+#                 - array     :np.array:  the actual data
+#                 - sequence  :bool:      a flag to identify whether data contains sequences
+#                 - output    :bool:      a flag to identify whether data is output or input
+#                 - dim       :int:       the dimension of the data
+#     """
+
+#     def __init__(self, *data:List[Dict[str,Any]]):
+
+#         self.names = []
+#         self.tensors = []
+#         self.dims = []
+#         for array_dict in data:
+#             array = array_dict["array"]
+
 
 class SequenceDataset(Dataset):
 
-    def __init__(self, features:np.array, 
-                 labels:Optional[np.array]=None, 
-                 indices:Optional[List[Union[str,int]]]=None, 
-                 input_dim:Optional[int]=None, 
+    """
+    A pytorch dataset build from any number of arrays that can be sequences
+    The difference between sequences and labels is made by checking whether the dtype
+    of the array is object or not
+    """
+
+    def __init__(self, features:np.array,
+                 labels:Optional[np.array]=None,
+                 indices:Optional[List[Union[str,int]]]=None,
+                 input_dim:Optional[int]=None,
                  output_dim:Optional[int]=None):
-        
+
         if type(features[0]) == list and input_dim is None:
             raise ValueError("Cannot infer input dim")
         self.input_dim = input_dim or features[0].shape[-1]
-        
+
         if labels is not None and labels.ndim == 1 and output_dim is None:
             raise ValueError("Cannot infer output dim")
         self.output_dim = output_dim or (None if labels is None else labels.shape[1])
-        
+
         if labels is not None and len(labels) != len(features):
             raise ValueError(f"Size mismatch: {len(features)} and {len(labels)} examples")
 
         if indices is not None and len(indices) != len(features):
-            raise ValueError(f"Size mismatch: {len(features)} and {len(indices)} examples")        
-        
+            raise ValueError(f"Size mismatch: {len(features)} and {len(indices)} examples")
+
         self.feature_lengths = [len(feats) for feats in features]
         self.features = features
         self.labels = labels
         self.indices = list(indices if indices is not None else np.arange(len(features)))
-        
+
     def __getitem__(self, idx:Union[slice,str,int]) -> List[torch.Tensor]:
-        
+
         if isinstance(idx, slice):
             return self.data_collator([self[i] for i in range(*idx.indices(len(self)))])
-        
+
         if isinstance(idx, str):
             if idx not in self.indices:
                 raise KeyError(f"{idx}")
@@ -73,7 +104,7 @@ class Subset(_Subset):
             self.input_dim = dataset.input_dim
         if hasattr(dataset, "output_dim"):
             self.output_dim = dataset.output_dim
-            
+
     def data_collator(self, batch:List[List[torch.Tensor]]) -> List[torch.Tensor]:
         return self.dataset.data_collator(batch)
 
