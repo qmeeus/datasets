@@ -4,7 +4,10 @@ import kaldiio
 import numpy as np
 import os
 import sys
+
 from argparse import ArgumentParser, Namespace
+from functools import partial
+from logzero import logger
 from math import floor
 from pathlib import Path
 from sklearn.model_selection import train_test_split
@@ -16,7 +19,7 @@ from assist.tasks.coder import Coder as CoderBase
 from assist.tasks import Structure, coder_factory, read_task
 from assist.tools import parse_line, logger
 
-from .torch_datasets import SequenceDataset, Subset
+from .torch_datasets import ArrayDataset, MultiModalDataset, SequenceDataset, SequenceDataset2, Subset
 
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
@@ -39,12 +42,28 @@ CONFIG_DIR = Path(__file__).parents[1]/"config"
 
 class Dataset:
 
+    @property
+    def input_key(self):
+        # TODO: backward compatibility with assist. Remove when possible
+        return self.data_keys[0]
+    
+    @property
+    def output_key(self):
+        # TODO: backward compatibility with assist. Remove when possible
+        return self.data_keys[1]
+
     @staticmethod
     def parse_args(parser:ArgumentParser) -> ArgumentParser:
-        parser.add_argument("--dataset", type=Path, required=True, help="Path to dataset config")
-        parser.add_argument("--input-key", type=str, default="fbank", help="Input key in dataset config")
-        parser.add_argument("--output-key", type=str, default="tasks", help="Output key in dataset config")
-        return parser
+        # TODO: For compatibility
+        return Dataset.add_arguments(parser)
+        
+    @staticmethod
+    def add_arguments(parser:ArgumentParser) -> ArgumentParser:
+        group = parser.add_argument_group("Dataset")
+        group.add_argument("--dataset", type=Path, required=True, help="Path to dataset config")
+        group.add_argument("--input-key", type=str, default="fbank", help="Input key in dataset config")
+        group.add_argument("--output-key", type=str, default="tasks", help="Output key in dataset config")
+        return parser        
 
     @classmethod
     def from_args(cls, args:Namespace) -> 'Dataset':
@@ -57,14 +76,19 @@ class Dataset:
 
         self.attributes = config["dataset"]
         self.data_keys = load_keys or list(config["files"])
+
+        errors = list(filter(lambda k: k not in config["files"], self.data_keys))
+        if errors:
+            raise ValueError(f"Unknown data key(s): {errors}")
+        
         if len(self.data_keys) > 2:
             # TODO: Implement for more than 1 input & 1 output
             raise NotImplementedError("No more than 2 data types implemented")
 
         self._converters = config["converters"]
         self._data = config["files"]
-
-    def __call__(self, subsets:Optional[Union[str,List[str]]]=None, sample:Optional[Union[int,float]]=None) -> TorchDataset:
+        
+    def __call__(self, subsets:Optional[Union[str,List[str]]]=None, p:Optional[Union[int,float]]=None) -> TorchDataset:
 
         if subsets is None:
             subsets = self.get_available_subsets()
@@ -76,27 +100,28 @@ class Dataset:
         for data_key in self.data_keys:
             filenames = [fn for subset, fn in self._data[data_key].items() if subset in subsets]
             if not filenames:
-                raise ValueError(f"Invalid subsets: {subsets}. Available: {self.data_keys}")
+                raise ValueError(f"Invalid subsets: {subsets}. Available: {self.get_available_subsets()}")
             filetype = self._data[data_key]["_meta"]["format"]
-            data += (self.merge(self.load, filenames, filetype),)
+            data += (self.merge_dict(*map(partial(self.load, filetype=filetype), filenames)),)
 
         data = self.validate_subset(*data)
         index = sorted(data[0])
 
-        if isinstance(sample, (int, float)) and sample > 0:
-            if type(sample) is float:
-                sample = int(len(index) * sample)
-            index = np.random.choice(index, sample, replace=False)
+        if isinstance(p, (int, float)) and p > 0:
+            if type(p) is float:
+                p = int(len(index) * p)
+            index = np.random.choice(index, p, replace=False)
 
-        arrays = ()
-        dims = ()
+        datasets = ()
         for data_key, table in zip(self.data_keys, data):
             table = [table[idx] for idx in index]
-            array, dim = self.process(table, self._data[data_key]["_meta"]["type"])
-            arrays += (array,)
-            dims += (dim,)
+            datatype = self._data[data_key]["_meta"]["type"]
+            array, dim = self.process(table, datatype)
+            DatasetClass = SequenceDataset2 if datatype == "feats" else ArrayDataset
+            datasets += (DatasetClass(array, dim=dim),)
 
-        return SequenceDataset(*arrays, index, *dims)
+        logger.info(f"Loaded {self.attributes['name']}/{subsets} ({len(index)} examples)")
+        return MultiModalDataset(*datasets, indices=index)
 
     @property
     def classes(self) -> List[str]:
@@ -120,7 +145,7 @@ class Dataset:
     @property
     def coder(self) -> CoderBase:
         if "coder" not in self._converters:
-            raise ValueError("Tokenizer not set in config")
+            raise ValueError("Coder not set in config")
 
         coder = self._converters["coder"]
         if type(coder) is dict:
@@ -138,7 +163,7 @@ class Dataset:
         if not all(type(key) is str for key in data_keys):
             raise TypeError(f"Wrong type for {data_keys} (expected list of strings)")
 
-        return list(set.intersection(*map(set, map(self.get_available_subsets, data_keys))))
+        return list(set.intersection(*map(set, map(self.get_available_subsets, set(data_keys)))))
 
     def validate_subset(self, *inputs:List[Json]) -> List[Json]:
         on_error = self.attributes.get("on_error", "raise")
@@ -194,7 +219,7 @@ class Dataset:
             return data, self.coder.numlabels
         if datatype == "text":
             # TODO: return np.array, not tensors
-            return self.tokenizer(data)["input_ids"], self.tokenizer.vocab_size
+            return self.tokenizer(data, add_special_tokens=False)["input_ids"], self.tokenizer.vocab_size
 
         raise NotImplementedError(f"Unknown datatype {datatype} for data of type {type(data)}")
 
@@ -224,11 +249,18 @@ class Dataset:
         for name, subset in splits.items():
             subset.save(f"{outdir}/{name}.txt")
 
+    # @staticmethod
+    # def merge(load:Callable[...,Json], files:List[PathLike], *args:List[Any]) -> Json:
+    #     out = {}
+    #     for filename in files:
+    #         out.update(load(filename, *args))
+    #     return out
+    
     @staticmethod
-    def merge(load:Callable[...,Json], files:List[PathLike], *args:List[Any]) -> Json:
+    def merge_dict(*dictionaries):
         out = {}
-        for filename in files:
-            out.update(load(filename, *args))
+        for dictionary in dictionaries:
+            out.update(dictionary)
         return out
 
     @staticmethod
