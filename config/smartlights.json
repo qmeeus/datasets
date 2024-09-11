@@ -8,23 +8,43 @@
     "files": {
         "fbank": {
             "_meta": {"type": "feats", "format": "scp", "dim": 80},
-            "all": "/esat/spchtemp/scratch/qmeeus/data/sonos/local/dump/smart-lights-en-close-field/feats.scp"
+            "all": "/esat/spchtemp/scratch/qmeeus/data/sonos/local/dump/smart-lights-en-close-field/feats.scp",
+            "train": "/esat/spchtemp/scratch/qmeeus/data/sonos/local/data/train/feats.scp",
+            "valid": "/esat/spchtemp/scratch/qmeeus/data/sonos/local/data/valid/feats.scp",
+            "test": "/esat/spchtemp/scratch/qmeeus/data/sonos/local/data/test/feats.scp"
         },
         "mlmtransformer": {
-            "_meta": {"type": "feats", "format": "h5", "dim": 768},
-            "all": "/esat/spchtemp/scratch/qmeeus/repos/espnet-stable/egs/librispeech/asr1/exp/train_960_pytorch_sti_transformer_lr10.0_ag8_p.5_specaug/encode/smart-lights-en-close/predictions.h5"
+            "_meta": {"type": "feats", "format": "npz", "dim": 768},
+            "all": "/esat/spchtemp/scratch/qmeeus/data/sonos/local/data/smart-lights-en-close-field/mlmtransformer.npz",
+            "train": "/esat/spchtemp/scratch/qmeeus/data/sonos/local/data/train/mlmtransformer.npz",
+            "valid": "/esat/spchtemp/scratch/qmeeus/data/sonos/local/data/valid/mlmtransformer.npz",
+            "test": "/esat/spchtemp/scratch/qmeeus/data/sonos/local/data/test/mlmtransformer.npz"
         },
         "text": {
             "_meta": {"type": "text", "format": "txt", "dim": null},
-            "all": "/esat/spchtemp/scratch/qmeeus/data/sonos/local/data/smart-lights-en-close-field/text"
+            "all": "/esat/spchtemp/scratch/qmeeus/data/sonos/local/data/smart-lights-en-close-field/text",
+            "train": "/esat/spchtemp/scratch/qmeeus/data/sonos/local/data/train/text",
+            "valid": "/esat/spchtemp/scratch/qmeeus/data/sonos/local/data/valid/text",
+            "test": "/esat/spchtemp/scratch/qmeeus/data/sonos/local/data/test/text"
+        },
+        "tokens": {
+            "_meta": {"type": "tokens", "format": "txt", "dim": null},
+            "all": "/esat/spchtemp/scratch/qmeeus/data/sonos/local/data/smart-lights-en-close-field/tokens",            
+            "train": "/esat/spchtemp/scratch/qmeeus/data/sonos/local/data/train/tokens",
+            "valid": "/esat/spchtemp/scratch/qmeeus/data/sonos/local/data/valid/tokens",
+            "test": "/esat/spchtemp/scratch/qmeeus/data/sonos/local/data/test/tokens"
         },
         "tasks": {
             "_meta": {"type": "tasks", "format": "txt", "dim": null},
-            "all": "/esat/spchtemp/scratch/qmeeus/data/sonos/local/data/smart-lights-en-close-field/tasks"
+            "all": "/esat/spchtemp/scratch/qmeeus/data/sonos/local/data/smart-lights-en-close-field/tasks",
+            "train": "/esat/spchtemp/scratch/qmeeus/data/sonos/local/data/train/tasks",
+            "valid": "/esat/spchtemp/scratch/qmeeus/data/sonos/local/data/valid/tasks",
+            "test": "/esat/spchtemp/scratch/qmeeus/data/sonos/local/data/test/tasks"
         }
     },
     "converters": {
         "tokenizer": "bert-base-uncased",
+        "tokens": "/esat/audioslave/qmeeus/data/SLUE/kaldi/data/lang_unigram/train_960_unigram_5000_units.txt",
         "coder": {
             "type": "typeshare_coder",
             "structure": "/esat/spchtemp/scratch/qmeeus/data/sonos/local/data/smart-lights-en-close-field/structure.xml",

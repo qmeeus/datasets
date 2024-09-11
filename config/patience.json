@@ -28,6 +28,50 @@
             "pp9": "/esat/spchtemp/scratch/qmeeus/repos/assist/features/patience/speechbert_mlm/pp9.npz",
             "pp10": "/esat/spchtemp/scratch/qmeeus/repos/assist/features/patience/speechbert_mlm/pp10.npz"
         },
+        "mlmtransformer2": {
+            "_meta": {"type": "feats", "format": "npz", "dim": 256},
+            "pp1": "/esat/spchtemp/scratch/qmeeus/repos/multitask-learning/exp/train_cgn/mlm/20220402_172905/encode/patience/model.val30.avg.best/20220411_190543/dec_last_pp1.npz",
+            "pp3": "/esat/spchtemp/scratch/qmeeus/repos/multitask-learning/exp/train_cgn/mlm/20220402_172905/encode/patience/model.val30.avg.best/20220411_190543/dec_last_pp3.npz",
+            "pp4": "/esat/spchtemp/scratch/qmeeus/repos/multitask-learning/exp/train_cgn/mlm/20220402_172905/encode/patience/model.val30.avg.best/20220411_190543/dec_last_pp4.npz",
+            "pp6": "/esat/spchtemp/scratch/qmeeus/repos/multitask-learning/exp/train_cgn/mlm/20220402_172905/encode/patience/model.val30.avg.best/20220411_190543/dec_last_pp6.npz",
+            "pp7": "/esat/spchtemp/scratch/qmeeus/repos/multitask-learning/exp/train_cgn/mlm/20220402_172905/encode/patience/model.val30.avg.best/20220411_190543/dec_last_pp7.npz",
+            "pp8": "/esat/spchtemp/scratch/qmeeus/repos/multitask-learning/exp/train_cgn/mlm/20220402_172905/encode/patience/model.val30.avg.best/20220411_190543/dec_last_pp8.npz",
+            "pp9": "/esat/spchtemp/scratch/qmeeus/repos/multitask-learning/exp/train_cgn/mlm/20220402_172905/encode/patience/model.val30.avg.best/20220411_190543/dec_last_pp9.npz",
+            "pp10": "/esat/spchtemp/scratch/qmeeus/repos/multitask-learning/exp/train_cgn/mlm/20220402_172905/encode/patience/model.val30.avg.best/20220411_190543/dec_last_pp10.npz"
+        },
+        "bert-base-dutch-cased": {
+            "_meta": {"type": "feats", "format": "npz", "dim": 768},
+            "pp1": "/esat/spchtemp/scratch/qmeeus/repos/assist/features/patience/bertje/pp1.npz",
+            "pp3": "/esat/spchtemp/scratch/qmeeus/repos/assist/features/patience/bertje/pp3.npz",
+            "pp4": "/esat/spchtemp/scratch/qmeeus/repos/assist/features/patience/bertje/pp4.npz",
+            "pp6": "/esat/spchtemp/scratch/qmeeus/repos/assist/features/patience/bertje/pp6.npz",
+            "pp7": "/esat/spchtemp/scratch/qmeeus/repos/assist/features/patience/bertje/pp7.npz",
+            "pp8": "/esat/spchtemp/scratch/qmeeus/repos/assist/features/patience/bertje/pp8.npz",
+            "pp9": "/esat/spchtemp/scratch/qmeeus/repos/assist/features/patience/bertje/pp9.npz",
+            "pp10": "/esat/spchtemp/scratch/qmeeus/repos/assist/features/patience/bertje/pp10.npz"
+        },
+        "bert-base-dutch-cased-asr": {
+            "_meta": {"type": "feats", "format": "npz", "dim": 768},
+            "pp1": "/esat/spchtemp/scratch/qmeeus/repos/assist/features/patience/bertje_asr/pp1.npz",
+            "pp3": "/esat/spchtemp/scratch/qmeeus/repos/assist/features/patience/bertje_asr/pp3.npz",
+            "pp4": "/esat/spchtemp/scratch/qmeeus/repos/assist/features/patience/bertje_asr/pp4.npz",
+            "pp6": "/esat/spchtemp/scratch/qmeeus/repos/assist/features/patience/bertje_asr/pp6.npz",
+            "pp7": "/esat/spchtemp/scratch/qmeeus/repos/assist/features/patience/bertje_asr/pp7.npz",
+            "pp8": "/esat/spchtemp/scratch/qmeeus/repos/assist/features/patience/bertje_asr/pp8.npz",
+            "pp9": "/esat/spchtemp/scratch/qmeeus/repos/assist/features/patience/bertje_asr/pp9.npz",
+            "pp10": "/esat/spchtemp/scratch/qmeeus/repos/assist/features/patience/bertje_asr/pp10.npz"
+        },
+        "clm": {
+            "_meta": {"type": "feats", "format": "npz", "dim": 256},
+            "pp1": "/esat/spchtemp/scratch/qmeeus/repos/assist/features/patience/clm/pp1.npz",
+            "pp3": "/esat/spchtemp/scratch/qmeeus/repos/assist/features/patience/clm/pp3.npz",
+            "pp4": "/esat/spchtemp/scratch/qmeeus/repos/assist/features/patience/clm/pp4.npz",
+            "pp6": "/esat/spchtemp/scratch/qmeeus/repos/assist/features/patience/clm/pp6.npz",
+            "pp7": "/esat/spchtemp/scratch/qmeeus/repos/assist/features/patience/clm/pp7.npz",
+            "pp8": "/esat/spchtemp/scratch/qmeeus/repos/assist/features/patience/clm/pp8.npz",
+            "pp9": "/esat/spchtemp/scratch/qmeeus/repos/assist/features/patience/clm/pp9.npz",
+            "pp10": "/esat/spchtemp/scratch/qmeeus/repos/assist/features/patience/clm/pp10.npz"
+        },
         "asrtransformer": {
             "_meta": {"type": "text", "format": "txt", "dim": null},
             "pp1": "/esat/spchtemp/scratch/qmeeus/data/patience/speakers/pp1/transcription",
@@ -50,6 +94,17 @@
             "pp9": "/esat/spchtemp/scratch/qmeeus/data/patience/speakers/pp9/text",
             "pp10": "/esat/spchtemp/scratch/qmeeus/data/patience/speakers/pp10/text"
         },
+        "tokens": {
+            "_meta": {"type": "tokens", "format": "txt", "dim": null},
+            "pp1": "/esat/spchtemp/scratch/qmeeus/data/patience/speakers/pp1/tokens",
+            "pp3": "/esat/spchtemp/scratch/qmeeus/data/patience/speakers/pp3/tokens",
+            "pp4": "/esat/spchtemp/scratch/qmeeus/data/patience/speakers/pp4/tokens",
+            "pp6": "/esat/spchtemp/scratch/qmeeus/data/patience/speakers/pp6/tokens",
+            "pp7": "/esat/spchtemp/scratch/qmeeus/data/patience/speakers/pp7/tokens",
+            "pp8": "/esat/spchtemp/scratch/qmeeus/data/patience/speakers/pp8/tokens",
+            "pp9": "/esat/spchtemp/scratch/qmeeus/data/patience/speakers/pp9/tokens",
+            "pp10": "/esat/spchtemp/scratch/qmeeus/data/patience/speakers/pp10/tokens"
+        },
         "tasks": {
             "_meta": {"type": "tasks", "format": "txt", "dim": null},
             "pp1": "/esat/spchtemp/scratch/qmeeus/data/patience/speakers/pp1/tasks",
@@ -65,7 +120,7 @@
     "converters": {
         "tokenizer": "GroNLP/bert-base-dutch-cased",
         "coder": {
-            "type": "typesplit_coder",
+            "type": "typeshare_coder",
             "structure": "/esat/spchtemp/scratch/qmeeus/data/patience/structure.xml",
             "conf": {
                 "tasklabel": false,
@@ -73,6 +128,7 @@
                 "noisetype": null,
                 "noiseprob": 0.0
             }
-        }
+        },
+        "tokens": "/esat/spchtemp/scratch/qmeeus/data/grabo/vocab/CGN_train_unigram_5000_units.txt"
     }
 }

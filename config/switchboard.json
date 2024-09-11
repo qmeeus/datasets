@@ -1,0 +1,63 @@
+{
+    "dataset": {
+        "name": "Switchboard",
+        "language_code": "en",
+        "subsets": "speaker",
+        "on_error": "ignore"
+    },
+    "files": {
+        "fbank": {
+            "_meta": {"type": "feats", "format": "scp", "dim": 80},
+            "speaker1": "/path/to/speaker1/feats.scp",
+            "speaker2": "/path/to/speaker2/feats.scp",
+            "speaker3": "/path/to/speaker3/feats.scp"
+        },
+        "mlmtransformer": {
+            "_meta": {"type": "feats", "format": "scp", "dim": 768},
+            "speaker1": "/path/to/speaker1/enc.scp",
+            "speaker2": "/path/to/speaker2/enc.scp",
+            "speaker3": "/path/to/speaker3/enc.scp"
+        },
+        "asrtransformer": {
+            "_meta": {"type": "text", "format": "txt", "dim": null},
+            "speaker1": "/path/to/speaker1/transcription",
+            "speaker2": "/path/to/speaker2/transcription",
+            "speaker3": "/path/to/speaker3/transcription"
+        },
+        "text": {
+            "_meta": {"type": "text", "format": "txt", "dim": null},
+            "speaker1": "/path/to/speaker1/text",
+            "speaker2": "/path/to/speaker2/text",
+            "speaker3": "/path/to/speaker3/text"
+        },
+        "tasks": {
+            "_meta": {"type": "tasks", "format": "txt", "dim": null},
+            "speaker1": "/path/to/speaker1/tasks",
+            "speaker2": "/path/to/speaker2/tasks",
+            "speaker3": "/path/to/speaker3/tasks"
+        },
+        "labels": {
+            "_meta": {"type": "labels", "format": "txt", "dim": null},
+            "speaker1": "/path/to/speaker1/labels",
+            "speaker2": "/path/to/speaker2/labels",
+            "speaker3": "/path/to/speaker3/labels"
+        }
+    },
+    "converters": {
+        "tokenizer": "bert-base-dutch-cased",
+        "coder": {
+            "type": "typesplit_coder",
+            "structure": "/esat/spchtemp/scratch/qmeeus/data/grabo/structure.xml",
+            "conf": {
+                "tasklabel": false,
+                "threshold": 0.0,
+                "noisetype": null,
+                "noiseprob": 0.0
+            }
+        },
+        "classes": [
+            "positive",
+            "negative"
+        ]
+    }
+}

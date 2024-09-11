@@ -1,0 +1,38 @@
+{
+    "dataset": {
+        "name": "SLUE-VoxCeleb",
+        "language_code": "en",
+        "subsets": "splits",
+        "on_error": "raise"
+    },
+    "files": {
+        "fbank": {
+            "_meta": {"type": "feats", "format": "scp", "dim": 83},
+            "finetune": "/esat/audioslave/qmeeus/data/SLUE/kaldi/dump/slue-voxceleb/finetune/feats.scp",
+            "dev": "/esat/audioslave/qmeeus/data/SLUE/kaldi/dump/slue-voxceleb/dev/feats.scp",
+            "test": "/esat/audioslave/qmeeus/data/SLUE/kaldi/dump/slue-voxceleb/test/feats.scp"
+        },
+        "text": {
+            "_meta": {"type": "text", "format": "txt", "dim": null},
+            "finetune": "/esat/audioslave/qmeeus/data/SLUE/kaldi/data/slue-voxceleb/finetune/text",
+            "dev": "/esat/audioslave/qmeeus/data/SLUE/kaldi/data/slue-voxceleb/dev/text",
+            "test": "/esat/audioslave/qmeeus/data/SLUE/kaldi/data/slue-voxceleb/test/text"
+            
+        },
+        "tokens": {
+            "_meta": {"type": "tokens", "format": "txt", "dim": null},
+            "finetune": "/esat/audioslave/qmeeus/data/SLUE/kaldi/data/slue-voxceleb/finetune/tokens",
+            "dev": "/esat/audioslave/qmeeus/data/SLUE/kaldi/data/slue-voxceleb/dev/tokens"
+        },
+        "labels": {
+            "_meta": {"type": "labels", "format": "txt", "dim": null},
+            "finetune": "/esat/audioslave/qmeeus/data/SLUE/kaldi/data/slue-voxceleb/finetune/label",
+            "dev": "/esat/audioslave/qmeeus/data/SLUE/kaldi/data/slue-voxceleb/dev/label"
+        }
+    },
+    "converters": {
+        "tokenizer": "bert-base-uncased",
+        "tokens": "/esat/audioslave/qmeeus/data/SLUE/kaldi/data/lang_unigram/train_960_unigram_5000_units.txt",
+		"classes": "/esat/audioslave/qmeeus/data/SLUE/manifest/slue-voxceleb/labels.sent.txt"
+    }
+}

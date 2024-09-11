@@ -22,17 +22,31 @@
         },
         "mlmtransformer": {
             "_meta": {"type": "feats", "format": "npz", "dim": 768},
-            "pp2": "/esat/spchtemp/scratch/qmeeus/repos/assist/features/grabo/mlm_wwm/pp2.npz",
-            "pp3": "/esat/spchtemp/scratch/qmeeus/repos/assist/features/grabo/mlm_wwm/pp3.npz",
-            "pp4": "/esat/spchtemp/scratch/qmeeus/repos/assist/features/grabo/mlm_wwm/pp4.npz",
-            "pp5": "/esat/spchtemp/scratch/qmeeus/repos/assist/features/grabo/mlm_wwm/pp5.npz",
-            "pp6": "/esat/spchtemp/scratch/qmeeus/repos/assist/features/grabo/mlm_wwm/pp6.npz",
-            "pp7": "/esat/spchtemp/scratch/qmeeus/repos/assist/features/grabo/mlm_wwm/pp7.npz",
-            "pp8": "/esat/spchtemp/scratch/qmeeus/repos/assist/features/grabo/mlm_wwm/pp8.npz",
-            "pp9": "/esat/spchtemp/scratch/qmeeus/repos/assist/features/grabo/mlm_wwm/pp9.npz",
-            "pp10": "/esat/spchtemp/scratch/qmeeus/repos/assist/features/grabo/mlm_wwm/pp10.npz",
-            "pp11": "/esat/spchtemp/scratch/qmeeus/repos/assist/features/grabo/mlm_wwm/pp11.npz",
-            "pp12": "/esat/spchtemp/scratch/qmeeus/repos/assist/features/grabo/mlm_wwm/pp12.npz"
+            "pp2": "/esat/audioslave/qmeeus/repos/assist/features/grabo/mlm_wwm/pp2.npz",
+            "pp3": "/esat/audioslave/qmeeus/repos/assist/features/grabo/mlm_wwm/pp3.npz",
+            "pp4": "/esat/audioslave/qmeeus/repos/assist/features/grabo/mlm_wwm/pp4.npz",
+            "pp5": "/esat/audioslave/qmeeus/repos/assist/features/grabo/mlm_wwm/pp5.npz",
+            "pp6": "/esat/audioslave/qmeeus/repos/assist/features/grabo/mlm_wwm/pp6.npz",
+            "pp7": "/esat/audioslave/qmeeus/repos/assist/features/grabo/mlm_wwm/pp7.npz",
+            "pp8": "/esat/audioslave/qmeeus/repos/assist/features/grabo/mlm_wwm/pp8.npz",
+            "pp9": "/esat/audioslave/qmeeus/repos/assist/features/grabo/mlm_wwm/pp9.npz",
+            "pp10": "/esat/audioslave/qmeeus/repos/assist/features/grabo/mlm_wwm/pp10.npz",
+            "pp11": "/esat/audioslave/qmeeus/repos/assist/features/grabo/mlm_wwm/pp11.npz",
+            "pp12": "/esat/audioslave/qmeeus/repos/assist/features/grabo/mlm_wwm/pp12.npz"
+        },
+        "mlmtransformer2": {
+            "_meta": {"type": "feats", "format": "npz", "dim": 256},
+            "pp2": "/esat/audioslave/qmeeus/repos/multitask-learning/exp/train_cgn/mlm/20220402_172905/encode/encodings_pp2.npz",
+            "pp3": "/esat/audioslave/qmeeus/repos/multitask-learning/exp/train_cgn/mlm/20220402_172905/encode/encodings_pp3.npz",
+            "pp4": "/esat/audioslave/qmeeus/repos/multitask-learning/exp/train_cgn/mlm/20220402_172905/encode/encodings_pp4.npz",
+            "pp5": "/esat/audioslave/qmeeus/repos/multitask-learning/exp/train_cgn/mlm/20220402_172905/encode/encodings_pp5.npz",
+            "pp6": "/esat/audioslave/qmeeus/repos/multitask-learning/exp/train_cgn/mlm/20220402_172905/encode/encodings_pp6.npz",
+            "pp7": "/esat/audioslave/qmeeus/repos/multitask-learning/exp/train_cgn/mlm/20220402_172905/encode/encodings_pp7.npz",
+            "pp8": "/esat/audioslave/qmeeus/repos/multitask-learning/exp/train_cgn/mlm/20220402_172905/encode/encodings_pp8.npz",
+            "pp9": "/esat/audioslave/qmeeus/repos/multitask-learning/exp/train_cgn/mlm/20220402_172905/encode/encodings_pp9.npz",
+            "pp10": "/esat/audioslave/qmeeus/repos/multitask-learning/exp/train_cgn/mlm/20220402_172905/encode/encodings_pp10.npz",
+            "pp11": "/esat/audioslave/qmeeus/repos/multitask-learning/exp/train_cgn/mlm/20220402_172905/encode/encodings_pp11.npz",
+            "pp12": "/esat/audioslave/qmeeus/repos/multitask-learning/exp/train_cgn/mlm/20220402_172905/encode/encodings_pp12.npz"
         },
         "asrtransformer": {
             "_meta": {"type": "text", "format": "txt", "dim": null},
@@ -63,6 +77,20 @@
             "pp12": "/esat/spchtemp/scratch/qmeeus/data/grabo/speakers/pp12/text"
             
         },
+        "tokens": {
+            "_meta": {"type": "tokens", "format": "txt", "dim": null},
+            "pp2": "/esat/spchtemp/scratch/qmeeus/data/grabo/speakers/pp2/tokens",
+            "pp3": "/esat/spchtemp/scratch/qmeeus/data/grabo/speakers/pp3/tokens",
+            "pp4": "/esat/spchtemp/scratch/qmeeus/data/grabo/speakers/pp4/tokens",
+            "pp5": "/esat/spchtemp/scratch/qmeeus/data/grabo/speakers/pp5/tokens",
+            "pp6": "/esat/spchtemp/scratch/qmeeus/data/grabo/speakers/pp6/tokens",
+            "pp7": "/esat/spchtemp/scratch/qmeeus/data/grabo/speakers/pp7/tokens",
+            "pp8": "/esat/spchtemp/scratch/qmeeus/data/grabo/speakers/pp8/tokens",
+            "pp9": "/esat/spchtemp/scratch/qmeeus/data/grabo/speakers/pp9/tokens",
+            "pp10": "/esat/spchtemp/scratch/qmeeus/data/grabo/speakers/pp10/tokens",
+            "pp11": "/esat/spchtemp/scratch/qmeeus/data/grabo/speakers/pp11/tokens",
+            "pp12": "/esat/spchtemp/scratch/qmeeus/data/grabo/speakers/pp12/tokens"            
+        },
         "tasks": {
             "_meta": {"type": "tasks", "format": "txt", "dim": null},
             "pp2": "/esat/spchtemp/scratch/qmeeus/data/grabo/speakers/pp2/tasks",
@@ -89,6 +117,7 @@
                 "noisetype": null,
                 "noiseprob": 0.0
             }
-        }
+        },
+        "tokens": "/esat/spchtemp/scratch/qmeeus/data/grabo/vocab/CGN_train_unigram_5000_units.txt"
     }
 }

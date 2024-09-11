@@ -1,0 +1,20 @@
+{
+    "dataset": {
+        "name": "NBest",
+        "language_code": "nl",
+        "subsets": "split",
+        "on_error": "ignore"
+    },
+    "files": {
+        "fbank": {
+            "_meta": {"type": "feats", "format": "scp", "dim": 80},
+            "test": "/esat/audioslave/qmeeus/data/nbest-test/kaldi/dump/feats.scp"
+
+        },
+        "text": {
+            "_meta": {"type": "text", "format": "txt", "dim": null},
+            "test": "/esat/audioslave/qmeeus/data/nbest-test/kaldi/data/text"
+        }
+    },
+    "converters": {}
+}

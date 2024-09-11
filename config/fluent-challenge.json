@@ -1,0 +1,72 @@
+{
+    "dataset": {
+        "name": "FluentSpeechCommands",
+        "language_code": "en",
+        "subsets": "splits",
+        "on_error": "ignore"
+    },
+    "files": {
+        "fbank": {
+            "_meta": {"type": "feats", "format": "scp", "dim": 80},
+            "train": "/esat/spchtemp/scratch/qmeeus/data/FluentSpeechCommands/challenge_splits/train/feats.scp",
+            "valid": "/esat/spchtemp/scratch/qmeeus/data/FluentSpeechCommands/challenge_splits/valid/feats.scp",
+            "tests": "/esat/spchtemp/scratch/qmeeus/data/FluentSpeechCommands/challenge_splits/tests/feats.scp",
+            "testu": "/esat/spchtemp/scratch/qmeeus/data/FluentSpeechCommands/challenge_splits/testu/feats.scp",
+            "none": "/esat/spchtemp/scratch/qmeeus/data/FluentSpeechCommands/challenge_splits/none/feats.scp"
+        },
+        "mlmtransformer": {
+            "_meta": {"type": "feats", "format": "npz", "dim": 768},
+            "train": "/esat/spchtemp/scratch/qmeeus/data/FluentSpeechCommands/challenge_splits/train/train_960_pytorch_sti_transformer_lr10.0_ag8_p.5_mlm_specaug.npz",
+            "valid": "/esat/spchtemp/scratch/qmeeus/data/FluentSpeechCommands/challenge_splits/valid/train_960_pytorch_sti_transformer_lr10.0_ag8_p.5_mlm_specaug.npz",
+            "tests": "/esat/spchtemp/scratch/qmeeus/data/FluentSpeechCommands/challenge_splits/tests/train_960_pytorch_sti_transformer_lr10.0_ag8_p.5_mlm_specaug.npz",
+            "testu": "/esat/spchtemp/scratch/qmeeus/data/FluentSpeechCommands/challenge_splits/testu/train_960_pytorch_sti_transformer_lr10.0_ag8_p.5_mlm_specaug.npz",
+            "none": "/esat/spchtemp/scratch/qmeeus/data/FluentSpeechCommands/challenge_splits/none/train_960_pytorch_sti_transformer_lr10.0_ag8_p.5_mlm_specaug.npz"
+        },
+        "asrtransformer": {
+            "_meta": {"type": "text", "format": "txt", "dim": null},
+            "train": "/esat/spchtemp/scratch/qmeeus/data/FluentSpeechCommands/challenge_splits/train/transcription",
+            "valid": "/esat/spchtemp/scratch/qmeeus/data/FluentSpeechCommands/challenge_splits/valid/transcription",
+            "tests": "/esat/spchtemp/scratch/qmeeus/data/FluentSpeechCommands/challenge_splits/tests/transcription",
+            "testu": "/esat/spchtemp/scratch/qmeeus/data/FluentSpeechCommands/challenge_splits/testu/transcription",
+            "none": "/esat/spchtemp/scratch/qmeeus/data/FluentSpeechCommands/challenge_splits/none/transcription"
+        },
+        "text": {
+            "_meta": {"type": "text", "format": "txt", "dim": null},
+            "train": "/esat/spchtemp/scratch/qmeeus/data/FluentSpeechCommands/challenge_splits/train/text",
+            "valid": "/esat/spchtemp/scratch/qmeeus/data/FluentSpeechCommands/challenge_splits/valid/text",
+            "tests": "/esat/spchtemp/scratch/qmeeus/data/FluentSpeechCommands/challenge_splits/tests/text",
+            "testu": "/esat/spchtemp/scratch/qmeeus/data/FluentSpeechCommands/challenge_splits/testu/text",
+            "none": "/esat/spchtemp/scratch/qmeeus/data/FluentSpeechCommands/challenge_splits/none/text"
+        },
+        "tokens": {
+            "_meta": {"type": "tokens", "format": "txt", "dim": null},
+            "train": "/esat/spchtemp/scratch/qmeeus/data/FluentSpeechCommands/challenge_splits/train/tokens",
+            "valid": "/esat/spchtemp/scratch/qmeeus/data/FluentSpeechCommands/challenge_splits/valid/tokens",
+            "tests": "/esat/spchtemp/scratch/qmeeus/data/FluentSpeechCommands/challenge_splits/tests/tokens",
+            "testu": "/esat/spchtemp/scratch/qmeeus/data/FluentSpeechCommands/challenge_splits/testu/tokens",
+            "none": "/esat/spchtemp/scratch/qmeeus/data/FluentSpeechCommands/challenge_splits/none/tokens"
+        },
+        "tasks": {
+            "_meta": {"type": "tasks", "format": "txt", "dim": null},
+            "train": "/esat/spchtemp/scratch/qmeeus/data/FluentSpeechCommands/challenge_splits/train/tasks",
+            "valid": "/esat/spchtemp/scratch/qmeeus/data/FluentSpeechCommands/challenge_splits/valid/tasks",
+            "tests": "/esat/spchtemp/scratch/qmeeus/data/FluentSpeechCommands/challenge_splits/tests/tasks",
+            "testu": "/esat/spchtemp/scratch/qmeeus/data/FluentSpeechCommands/challenge_splits/testu/tasks",
+            "none": "/esat/spchtemp/scratch/qmeeus/data/FluentSpeechCommands/challenge_splits/none/tasks"
+        }
+    },
+    "converters": {
+        "tokenizer": "bert-base-uncased",
+        "tokens": "/esat/audioslave/qmeeus/data/SLUE/kaldi/data/lang_unigram/train_960_unigram_5000_units.txt",
+        "coder": {
+            "type": "typesplit_coder",
+            "structure": "/esat/spchtemp/scratch/qmeeus/data/FluentSpeechCommands/kaldi/data/structure.xml",
+            "conf": {
+                "tasklabel": false,
+                "threshold": 0.0,
+                "noisetype": null,
+                "noiseprob": 0.0
+            }
+        }
+    }
+}

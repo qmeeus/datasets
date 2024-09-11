@@ -30,6 +30,12 @@
             "valid": "/esat/spchtemp/scratch/qmeeus/data/FluentSpeechCommands/kaldi/data/valid/text",
             "test": "/esat/spchtemp/scratch/qmeeus/data/FluentSpeechCommands/kaldi/data/test/text"
         },
+        "tokens": {
+            "_meta": {"type": "tokens", "format": "txt", "dim": null},
+            "train": "/esat/spchtemp/scratch/qmeeus/data/FluentSpeechCommands/kaldi/data/train/tokens",
+            "valid": "/esat/spchtemp/scratch/qmeeus/data/FluentSpeechCommands/kaldi/data/valid/tokens",
+            "test": "/esat/spchtemp/scratch/qmeeus/data/FluentSpeechCommands/kaldi/data/test/tokens"
+        },
         "tasks": {
             "_meta": {"type": "tasks", "format": "txt", "dim": null},
             "train": "/esat/spchtemp/scratch/qmeeus/data/FluentSpeechCommands/kaldi/dump/train/tasks",
@@ -39,6 +45,7 @@
     },
     "converters": {
         "tokenizer": "bert-base-uncased",
+        "tokens": "/esat/audioslave/qmeeus/data/SLUE/kaldi/data/lang_unigram/train_960_unigram_5000_units.txt",
         "coder": {
             "type": "typesplit_coder",
             "structure": "/esat/spchtemp/scratch/qmeeus/data/FluentSpeechCommands/kaldi/data/structure.xml",

@@ -31,7 +31,19 @@
             "valid": "/esat/spchtemp/scratch/qmeeus/data/vaccinbot/valid/text",
             "test": "/esat/spchtemp/scratch/qmeeus/data/vaccinbot/test/text"
         },
+        "tokens": {
+            "_meta": {"type": "tokens", "format": "txt", "dim": null},
+            "train": "/esat/spchtemp/scratch/qmeeus/data/vaccinbot/train/tokens",
+            "valid": "/esat/spchtemp/scratch/qmeeus/data/vaccinbot/valid/tokens",
+            "test": "/esat/spchtemp/scratch/qmeeus/data/vaccinbot/test/tokens"
+        },
         "labels": {
+            "_meta": {"type": "labels", "format": "txt", "dim": null},
+            "train": "/esat/spchtemp/scratch/qmeeus/data/vaccinbot/train/label",
+            "valid": "/esat/spchtemp/scratch/qmeeus/data/vaccinbot/valid/label",
+            "test": "/esat/spchtemp/scratch/qmeeus/data/vaccinbot/test/label"
+        },
+        "new_labels": {
             "_meta": {"type": "labels", "format": "txt", "dim": null},
             "train": "/esat/spchtemp/scratch/qmeeus/data/vaccinbot/train/label",
             "valid": "/esat/spchtemp/scratch/qmeeus/data/vaccinbot/valid/label",
@@ -41,6 +53,9 @@
     },
     "converters": {
         "tokenizer": "GroNLP/bert-base-dutch-cased",
-        "classes": "/esat/spchtemp/scratch/qmeeus/data/vaccinbot/new_intents"
+        "classes": "/esat/spchtemp/scratch/qmeeus/data/vaccinbot/intents",
+        "labels_weights": "/esat/spchtemp/scratch/qmeeus/data/vaccinbot/class_weights.npy",
+        "new_labels": "/esat/spchtemp/scratch/qmeeus/data/vaccinbot/new_intents",
+        "tokens": "/esat/spchtemp/scratch/qmeeus/data/grabo/vocab/CGN_train_unigram_5000_units.txt"
     }
 }

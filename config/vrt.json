@@ -1,0 +1,31 @@
+{
+    "dataset": {
+        "name": "VRT",
+        "language_code": "nl",
+        "subsets": "split",
+        "on_error": "ignore"
+    },
+    "files": {
+        "fbank": {
+            "_meta": {"type": "feats", "format": "scp", "dim": 80},
+            "train": "/esat/audioslave/qmeeus/data/VRT/kaldi/dump/feats.scp"
+        },
+        "mlmtransformer": {
+            "_meta": {"type": "feats", "format": "npz", "dim": 768},
+            "train": ""
+        },
+        "text": {
+            "_meta": {"type": "text", "format": "txt", "dim": null},
+            "train": "/esat/audioslave/qmeeus/data/VRT/kaldi/data/text"
+            
+        },
+        "tokens": {
+            "_meta": {"type": "tokens", "format": "txt", "dim": null},
+            "train": ""
+        }
+    },
+    "converters": {
+        "tokenizer": "pdelobelle/robbert-v2-dutch-base",
+        "tokens": "/esat/spchtemp/scratch/qmeeus/data/grabo/vocab/CGN_train_unigram_5000_units.txt"
+    }
+}

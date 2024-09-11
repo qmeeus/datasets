@@ -1,4 +1,6 @@
 import json
+from operator import itemgetter
+import warnings
 import h5py
 import kaldiio
 import numpy as np
@@ -45,29 +47,35 @@ class Dataset:
     @property
     def input_key(self):
         # TODO: backward compatibility with assist. Remove when possible
+        warnings.warn("Deprecated use of input_key", DeprecationWarning)
         return self.data_keys[0]
     
     @property
     def output_key(self):
         # TODO: backward compatibility with assist. Remove when possible
+        warnings.warn("Deprecated use of output_key", DeprecationWarning)
         return self.data_keys[1]
 
     @staticmethod
     def parse_args(parser:ArgumentParser) -> ArgumentParser:
         # TODO: For compatibility
+        warnings.warn("Deprecated use of parse_args. Replace with add_arguments", DeprecationWarning)
         return Dataset.add_arguments(parser)
         
     @staticmethod
     def add_arguments(parser:ArgumentParser) -> ArgumentParser:
         group = parser.add_argument_group("Dataset")
-        group.add_argument("--dataset", type=Path, required=True, help="Path to dataset config")
-        group.add_argument("--input-key", type=str, default="fbank", help="Input key in dataset config")
-        group.add_argument("--output-key", type=str, default="tasks", help="Output key in dataset config")
+        group.add_argument("--dataset", type=str, required=True, help="Path to dataset config")
+        group.add_argument("--input-key", type=str, default=None, help="Input key in dataset config")
+        group.add_argument("--output-key", type=str, default=None, help="Output key in dataset config")
+        group.add_argument("--data-keys", type=lambda s: s.split(","), default=None, help="Comma-separated list of keys to load")
         return parser        
 
     @classmethod
     def from_args(cls, args:Namespace) -> 'Dataset':
-        return cls(args.dataset, [args.input_key, args.output_key])
+        if args.data_keys is None:
+            args.data_keys = [args.input_key, args.output_key]
+        return cls(args.dataset, args.data_keys)
 
     def __init__(self, config:Json, load_keys:Optional[List[str]]=None):
 
@@ -80,10 +88,6 @@ class Dataset:
         errors = list(filter(lambda k: k not in config["files"], self.data_keys))
         if errors:
             raise ValueError(f"Unknown data key(s): {errors}")
-        
-        if len(self.data_keys) > 2:
-            # TODO: Implement for more than 1 input & 1 output
-            raise NotImplementedError("No more than 2 data types implemented")
 
         self._converters = config["converters"]
         self._data = config["files"]
@@ -117,11 +121,36 @@ class Dataset:
             table = [table[idx] for idx in index]
             datatype = self._data[data_key]["_meta"]["type"]
             array, dim = self.process(table, datatype)
-            DatasetClass = SequenceDataset2 if datatype == "feats" else ArrayDataset
-            datasets += (DatasetClass(array, dim=dim),)
+            DatasetClass = SequenceDataset2 if datatype in ("feats", "text", "tokens", *self._converters) else ArrayDataset
+            opts = dict(dim=dim, name=data_key)
+            if datatype in ("text", "tokens", *self._converters):
+                opts["length"] = False
+            if DatasetClass == SequenceDataset2:
+                opts["pad_value"] = {"feats": 0., "text": 1, "tokens": -1}.get(datatype, 0) 
+            datasets += (DatasetClass(array, **opts),)
 
         logger.info(f"Loaded {self.attributes['name']}/{subsets} ({len(index)} examples)")
         return MultiModalDataset(*datasets, indices=index)
+
+    def load_converter(self, key):
+        if type(self._converters[key]) is str:
+            with open(self._converters[key]) as f:
+                self._converters[key] = list(map(str.strip, f))
+
+    @property
+    def vocabulary(self) -> List[str]:
+        # ESPnet's char_list
+        if "tokens" not in self._converters:
+            raise ValueError("Vocabulary not listed in config")
+        vocab = self._converters["tokens"]
+        if type(vocab) is str:
+            with open(vocab) as f:
+                vocab = dict(map(str.split, f))
+                vocab = dict(zip(vocab.keys(), map(int, vocab.values())))
+                vocab.update({"<blank>": 0, "<eos>": len(vocab) + 1})
+                vocab = dict(sorted(vocab.items(), key=itemgetter(1)))
+                self._converters["tokens"] = vocab
+        return vocab
 
     @property
     def classes(self) -> List[str]:
@@ -130,8 +159,8 @@ class Dataset:
         classes = self._converters["classes"]
         if type(classes) is str:
             with open(classes) as f:
-                self._converters["classes"] = classes = list(filter(bool, map(str.strip, f)))
-        return classes
+                self._converters["classes"] = list(filter(bool, map(str.strip, f)))
+        return self._converters["classes"]
 
     @property
     def tokenizer(self) -> PreTrainedTokenizerBase:
@@ -139,8 +168,8 @@ class Dataset:
             raise ValueError("Tokenizer not set in config")
         tokenizer = self._converters["tokenizer"]
         if type(tokenizer) is str:
-            self._converters["tokenizer"] = tokenizer = AutoTokenizer.from_pretrained(tokenizer)
-        return tokenizer
+            self._converters["tokenizer"] = AutoTokenizer.from_pretrained(tokenizer)
+        return self._converters["tokenizer"]
 
     @property
     def coder(self) -> CoderBase:
@@ -163,7 +192,7 @@ class Dataset:
         if not all(type(key) is str for key in data_keys):
             raise TypeError(f"Wrong type for {data_keys} (expected list of strings)")
 
-        return list(set.intersection(*map(set, map(self.get_available_subsets, set(data_keys)))))
+        return sorted(set.intersection(*map(set, map(self.get_available_subsets, set(data_keys)))))
 
     def validate_subset(self, *inputs:List[Json]) -> List[Json]:
         on_error = self.attributes.get("on_error", "raise")
@@ -212,31 +241,49 @@ class Dataset:
         if datatype == "labels":
             label2class = {label: index for index, label in enumerate(self.classes)}
             to_class = label2class.__getitem__
-            return np.array(list(map(to_class, data))), len(label2class)
+            return np.array(list(map(to_class, data)), dtype=int), len(label2class)
         if datatype == "tasks":
             encode = lambda task: self.coder.encode(read_task(task))
-            data = np.array(list(map(encode, data)))
-            return data, self.coder.numlabels
+            encoded = np.array(list(map(encode, data)), dtype=int)
+            return encoded, self.coder.numlabels
         if datatype == "text":
-            # TODO: return np.array, not tensors
-            return self.tokenizer(data, add_special_tokens=False)["input_ids"], self.tokenizer.vocab_size
+            tokens = self.tokenizer(data, add_special_tokens=False, return_tensors="np")["input_ids"]
+            tokens = np.array(list(map(np.array, tokens)), dtype=object)
+            return tokens, self.tokenizer.vocab_size
+        if datatype == "tokens":
+            unk = self.vocabulary["<unk>"]
+            encode = lambda tokens: np.array([self.vocabulary.get(token, unk) for token in tokens.split()], dtype=int)
+            tokens = np.array(list(map(encode, data)), dtype=object)
+            output_dim = len(self.vocabulary)
+            return tokens, output_dim
+        if datatype in self._converters:
+            self.load_converter(datatype)
+            vocab = self._converters[datatype]
+            encode = lambda tokens: np.array(list(map(vocab.index, tokens.split())), dtype=int)
+            tokens = np.array(list(map(encode, data)), dtype=object)
+            output_dim = len(vocab)
+            return tokens, output_dim
 
         raise NotImplementedError(f"Unknown datatype {datatype} for data of type {type(data)}")
 
     @staticmethod
-    def split(dataset:TorchDataset, sizes:List[Union[int,float]]) -> List[Subset]:
+    def split(dataset:TorchDataset, sizes:List[Union[int,float]], stratify:Optional[List[Any]]=None) -> List[Subset]:
         if sum(sizes) != 1:
             raise ValueError(f"Total size requested is not equal to 1.")
 
-        indices = dataset.indices
+        indices = np.arange(len(dataset))
 
         if type(sizes[0]) is float:
             sizes = [floor(p * len(indices)) for p in sizes]
             sizes[0] = len(indices) - sum(sizes[1:])
 
+        if type(stratify) is list:
+            stratify = np.array(stratify)
+
         subsets = []
         for size in sizes[:-1]:
-            subset, indices = train_test_split(indices, train_size=size)
+            labels = stratify[indices] if stratify is not None else None
+            subset, indices = train_test_split(indices, train_size=size, stratify=labels)
             subsets.append(Subset(dataset, subset))
 
         assert sizes[-1] == len(indices)
@@ -249,13 +296,6 @@ class Dataset:
         for name, subset in splits.items():
             subset.save(f"{outdir}/{name}.txt")
 
-    # @staticmethod
-    # def merge(load:Callable[...,Json], files:List[PathLike], *args:List[Any]) -> Json:
-    #     out = {}
-    #     for filename in files:
-    #         out.update(load(filename, *args))
-    #     return out
-    
     @staticmethod
     def merge_dict(*dictionaries):
         out = {}
@@ -267,49 +307,6 @@ class Dataset:
     def load_config(config:PathLike) -> Json:
         with open(config, "r") as f:
             return json.load(f)
-
-    # def __call__(self, subset=None, indices=None, p=1.):
-    #     if not(subset or indices):
-    #         raise ValueError("No argument supplied.")
-
-    #     ikey, okey = self.input_key, self.output_key
-    #     subsets = list(self.config[ikey]) if subset is None else [subset]
-
-    #     if not all(self.has_subset(subset) for subset in subsets):
-    #         raise KeyError(f"Invalid subset: {subset}")
-
-    #     inputs, outputs = self.load_inputs_and_outputs(subsets)
-    #     index = np.array(list(inputs))
-
-    #     if indices:
-    #         if type(indices) is str:
-    #             with open(indices) as f:
-    #                 indices = list(map(str.strip, f))
-    #         index = [idx for idx in index if idx in indices]
-    #         if not len(index):
-    #             raise ValueError("No element left. Look for mismatches in indices.")
-
-    #     if 0 < p < 1:
-    #         index = np.random.choice(index, int(len(index) * p), replace=False)
-
-    #     if any(key in ("text", "asr") for key in (ikey, okey)) and self.tokenizer is None:
-    #         raise ValueError("No tokenizer supplied.")
-
-    #     if ikey in ("text", "asr"):
-    #         inputs = self.tokenizer([inputs[idx] for idx in index])["input_ids"]
-    #         input_dim = self.tokenizer.vocab_size
-    #     else:
-    #         inputs = np.array([inputs[idx] for idx in index], dtype="object")
-    #         input_dim = inputs.shape[-1]
-
-    #     if okey in ("text", "asr"):
-    #         outputs = self.tokenizer([outputs[idx] for idx in index])["input_ids"]
-    #         output_dim = self.tokenizer.vocab_size
-    #     else:
-    #         outputs = np.array([outputs[idx] for idx in index])
-    #         output_dim = self.output_dim
-
-    #     return SequenceDataset(inputs, outputs, index, input_dim=input_dim, output_dim=output_dim)
 
 
 class Grabo(Dataset):
